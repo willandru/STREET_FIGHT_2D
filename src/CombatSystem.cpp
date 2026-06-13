@@ -6,16 +6,13 @@
 
 void CombatSystem::update(Match& match)
 {
-    Fighter& f1 = match.fighter1();
-    Fighter& f2 = match.fighter2();
-
-    checkFighterPair(f1, f2);
+    checkFighterPair(match.fighter1(), match.fighter2());
 }
 
 void CombatSystem::checkFighterPair(Fighter& a, Fighter& b)
 {
-    Transform& ta = a.transform();
-    Transform& tb = b.transform();
+    const Transform& ta = a.transform();
+    const Transform& tb = b.transform();
 
     const Hurtbox& ha = a.hurtbox();
     const Hurtbox& hb = b.hurtbox();
@@ -27,7 +24,7 @@ void CombatSystem::checkFighterPair(Fighter& a, Fighter& b)
     float by = tb.y + hb.offsetY;
 
     // =========================
-    // A → B
+    // A -> B
     // =========================
     for (const Hitbox& hit : a.hitboxes())
     {
@@ -47,7 +44,7 @@ void CombatSystem::checkFighterPair(Fighter& a, Fighter& b)
     }
 
     // =========================
-    // B → A
+    // B -> A
     // =========================
     for (const Hitbox& hit : b.hitboxes())
     {
@@ -71,14 +68,14 @@ bool CombatSystem::checkOverlap(
     float ax, float ay, float aw, float ah,
     float bx, float by, float bw, float bh)
 {
-    const float leftA = ax - aw * 0.5f;
-    const float rightA = ax + aw * 0.5f;
-    const float topA = ay + ah * 0.5f;
+    const float leftA   = ax - aw * 0.5f;
+    const float rightA  = ax + aw * 0.5f;
+    const float topA    = ay + ah * 0.5f;
     const float bottomA = ay - ah * 0.5f;
 
-    const float leftB = bx - bw * 0.5f;
-    const float rightB = bx + bw * 0.5f;
-    const float topB = by + bh * 0.5f;
+    const float leftB   = bx - bw * 0.5f;
+    const float rightB  = bx + bw * 0.5f;
+    const float topB    = by + bh * 0.5f;
     const float bottomB = by - bh * 0.5f;
 
     if (rightA < leftB || rightB < leftA)
@@ -94,7 +91,7 @@ void CombatSystem::processHit(Fighter& attacker, Fighter& victim, int damage)
 {
     victim.applyDamage(damage);
 
-    // futuro:
-    // victim.applyHitstun(...)
+    // futuro (extensión del sistema):
+    // victim.setHitstun(...)
     // victim.applyKnockback(...)
 }
