@@ -13,6 +13,4 @@ public:
 private:
 
     static constexpr float kGravity = -5.0f;
-
-    static constexpr float kGroundY = -0.80f;
 };

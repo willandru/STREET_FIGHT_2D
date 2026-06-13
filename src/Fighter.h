@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Transform.h"
+#include "Facing.h"
 
 class Fighter
 {
@@ -19,6 +20,9 @@ public:
     bool grounded() const;
     bool& grounded();
 
+    Facing facing() const;
+    Facing& facing();
+
     static constexpr float MoveSpeed = 3.0f;
     static constexpr float JumpSpeed = 6.5f;
 
@@ -29,4 +33,6 @@ private:
     float velocityY_ = 0.0f;
 
     bool grounded_ = false;
+
+    Facing facing_ = Facing::Right;
 };

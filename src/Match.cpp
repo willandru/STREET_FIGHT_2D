@@ -28,3 +28,13 @@ Fighter& Match::fighter2()
 {
     return fighter2_;
 }
+
+const Stage& Match::stage() const
+{
+    return stage_;
+}
+
+Stage& Match::stage()
+{
+    return stage_;
+}

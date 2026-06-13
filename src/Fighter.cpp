@@ -48,3 +48,13 @@ bool& Fighter::grounded()
 {
     return grounded_;
 }
+
+Facing Fighter::facing() const
+{
+    return facing_;
+}
+
+Facing& Fighter::facing()
+{
+    return facing_;
+}

@@ -40,6 +40,8 @@ add_executable(StreetFight2D
     src/Physics.cpp
     src/GameTime.cpp
     src/Input.cpp
+
+    src/Stage.cpp
 )
 
 # =========================================================
