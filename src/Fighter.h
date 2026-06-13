@@ -4,6 +4,9 @@
 #include "Facing.h"
 #include "FighterState.h"
 #include "FighterCommand.h"
+#include "CombatTypes.h"
+
+#include <vector>
 
 class Fighter
 {
@@ -31,8 +34,19 @@ public:
     FighterState state() const;
     FighterState& state();
 
-    void updateState();
+    const Hurtbox& hurtbox() const;
+    Hurtbox& hurtbox();
+
+    const std::vector<Hitbox>& hitboxes() const;
+    std::vector<Hitbox>& hitboxes();
+
     void applyCommand(const FighterCommand& cmd);
+    void updateState();
+
+    bool isAttackActive(const Hitbox& hit) const;
+
+    void applyDamage(int dmg);
+    int health() const;
 
     static constexpr float MoveSpeed = 3.0f;
     static constexpr float JumpSpeed = 6.5f;
@@ -46,8 +60,12 @@ private:
     bool grounded_ = false;
     bool crouching_ = false;
 
-    float stateTimer_ = 0.0f;
-
     Facing facing_ = Facing::Right;
     FighterState state_ = FighterState::Idle;
+
+    float stateTimer_ = 0.0f;
+    int health_ = 100;
+
+    Hurtbox hurtbox_;
+    std::vector<Hitbox> hitboxes_;
 };

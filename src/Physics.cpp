@@ -1,6 +1,7 @@
 #include "Physics.h"
-
-#include <algorithm>
+#include "Fighter.h"
+#include "Transform.h"
+#include "Stage.h"
 
 namespace
 {
@@ -13,15 +14,10 @@ void updateFighter(
     float leftBoundary,
     float rightBoundary)
 {
-    Transform& transform =
-        fighter.transform();
+    Transform& transform = fighter.transform();
 
     fighter.grounded() = false;
     fighter.crouching() = cmd.crouch;
-
-    // =========================
-    // INPUT → MOVEMENT
-    // =========================
 
     fighter.velocityX() = 0.0f;
 
@@ -34,110 +30,29 @@ void updateFighter(
     if (cmd.jump && fighter.grounded())
         fighter.velocityY() = Fighter::JumpSpeed;
 
-    // =========================
-    // GRAVITY
-    // =========================
+    fighter.velocityY() += gravity * deltaTime;
 
-    fighter.velocityY() +=
-        gravity * deltaTime;
+    transform.x += fighter.velocityX() * deltaTime;
+    transform.y += fighter.velocityY() * deltaTime;
 
-    // =========================
-    // MOVEMENT
-    // =========================
+    const float halfH = transform.height * 0.5f;
+    const float bottom = transform.y - halfH;
 
-    transform.x +=
-        fighter.velocityX() * deltaTime;
-
-    transform.y +=
-        fighter.velocityY() * deltaTime;
-
-    // =========================
-    // GROUND COLLISION
-    // =========================
-
-    const float fighterBottom =
-        transform.y -
-        transform.height * 0.5f;
-
-    if (fighterBottom <= groundY)
+    if (bottom <= groundY)
     {
-        transform.y =
-            groundY +
-            transform.height * 0.5f;
-
+        transform.y = groundY + halfH;
         fighter.velocityY() = 0.0f;
         fighter.grounded() = true;
     }
 
-    // =========================
-    // STAGE BOUNDARIES
-    // =========================
+    const float halfW = transform.width * 0.5f;
 
-    const float fighterLeft =
-        transform.x -
-        transform.width * 0.5f;
+    if (transform.x - halfW < leftBoundary)
+        transform.x = leftBoundary + halfW;
 
-    const float fighterRight =
-        transform.x +
-        transform.width * 0.5f;
-
-    if (fighterLeft < leftBoundary)
-    {
-        transform.x =
-            leftBoundary +
-            transform.width * 0.5f;
-    }
-
-    if (fighterRight > rightBoundary)
-    {
-        transform.x =
-            rightBoundary -
-            transform.width * 0.5f;
-    }
+    if (transform.x + halfW > rightBoundary)
+        transform.x = rightBoundary - halfW;
 }
-}
-
-void Physics::resolveFighterCollision(
-    Fighter& fighter1,
-    Fighter& fighter2)
-{
-    // =========================
-    // SOLO COLISIÓN EN SUELO
-    // =========================
-
-    if (!fighter1.grounded() || !fighter2.grounded())
-    {
-        return;
-    }
-
-    Transform& transform1 = fighter1.transform();
-    Transform& transform2 = fighter2.transform();
-
-    const float left1 = transform1.x - transform1.width * 0.5f;
-    const float right1 = transform1.x + transform1.width * 0.5f;
-
-    const float left2 = transform2.x - transform2.width * 0.5f;
-    const float right2 = transform2.x + transform2.width * 0.5f;
-
-    if (right1 <= left2 || left1 >= right2)
-        return;
-
-    const float overlap =
-        std::min(right1, right2) -
-        std::max(left1, left2);
-
-    const float separation = overlap * 0.5f;
-
-    if (transform1.x < transform2.x)
-    {
-        transform1.x -= separation;
-        transform2.x += separation;
-    }
-    else
-    {
-        transform1.x += separation;
-        transform2.x -= separation;
-    }
 }
 
 void Physics::update(
@@ -146,47 +61,17 @@ void Physics::update(
     const FighterCommand& p1,
     const FighterCommand& p2)
 {
-    const float groundY =
-        match.stage().groundY();
+    const float groundY = match.stage().groundY();
+    const float leftBoundary = match.stage().leftBoundary();
+    const float rightBoundary = match.stage().rightBoundary();
 
-    const float leftBoundary =
-        match.stage().leftBoundary();
+    updateFighter(match.fighter1(), p1, deltaTime, kGravity,
+                  groundY, leftBoundary, rightBoundary);
 
-    const float rightBoundary =
-        match.stage().rightBoundary();
+    updateFighter(match.fighter2(), p2, deltaTime, kGravity,
+                  groundY, leftBoundary, rightBoundary);
 
-    updateFighter(
-        match.fighter1(),
-        p1,
-        deltaTime,
-        kGravity,
-        groundY,
-        leftBoundary,
-        rightBoundary);
-
-    updateFighter(
-        match.fighter2(),
-        p2,
-        deltaTime,
-        kGravity,
-        groundY,
-        leftBoundary,
-        rightBoundary);
-
-    // =========================
-    // FIGHTER COLLISION
-    // =========================
-
-    resolveFighterCollision(
-        match.fighter1(),
-        match.fighter2());
-
-    // =========================
-    // FACING UPDATE
-    // =========================
-
-    if (match.fighter1().transform().x <
-        match.fighter2().transform().x)
+    if (match.fighter1().transform().x < match.fighter2().transform().x)
     {
         match.fighter1().facing() = Facing::Right;
         match.fighter2().facing() = Facing::Left;

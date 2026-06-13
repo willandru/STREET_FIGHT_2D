@@ -1,5 +1,8 @@
 #include "Fighter.h"
-#include "FighterCommand.h"
+
+// =========================
+// CONSTRUCTOR
+// =========================
 
 Fighter::Fighter()
 {
@@ -8,10 +11,18 @@ Fighter::Fighter()
 
     transform_.width = 0.30f;
     transform_.height = 0.30f;
+
+    // DEFAULT HURTBOX (puedes ajustar luego por personaje)
+    hurtbox_.offsetX = 0.0f;
+    hurtbox_.offsetY = 0.0f;
+    hurtbox_.width = 0.30f;
+    hurtbox_.height = 0.30f;
+
+    health_ = 100;
 }
 
 // =========================
-// GETTERS / SETTERS
+// GETTERS
 // =========================
 
 const Transform& Fighter::transform() const { return transform_; }
@@ -36,56 +47,37 @@ FighterState Fighter::state() const { return state_; }
 FighterState& Fighter::state() { return state_; }
 
 // =========================
-// COMMAND APPLICATION
+// COMBAT ACCESS
+// =========================
+
+const Hurtbox& Fighter::hurtbox() const { return hurtbox_; }
+Hurtbox& Fighter::hurtbox() { return hurtbox_; }
+
+const std::vector<Hitbox>& Fighter::hitboxes() const { return hitboxes_; }
+std::vector<Hitbox>& Fighter::hitboxes() { return hitboxes_; }
+
+// =========================
+// COMMAND HANDLING
 // =========================
 
 void Fighter::applyCommand(const FighterCommand& cmd)
 {
-    // =========================
-    // BLOCK INPUT DURING ATTACK
-    // =========================
-
+    // bloquear input durante ataques
     if (state_ == FighterState::LightAttack ||
         state_ == FighterState::HeavyAttack)
     {
         return;
     }
 
-    // =========================
-    // RESET PER FRAME INPUT
-    // =========================
+    crouching_ = cmd.crouch;
 
-    velocityX_ = 0.0f;
-    crouching_ = false;
-
-    // =========================
-    // MOVEMENT
-    // =========================
-
-    if (cmd.moveLeft)
-        velocityX_ = -MoveSpeed;
-
-    if (cmd.moveRight)
-        velocityX_ = MoveSpeed;
-
-    // =========================
-    // JUMP
-    // =========================
-
+    // jump (solo intención, Physics aplica impulso real)
     if (cmd.jump && grounded_)
+    {
         velocityY_ = JumpSpeed;
+    }
 
-    // =========================
-    // CROUCH
-    // =========================
-
-    if (cmd.crouch)
-        crouching_ = true;
-
-    // =========================
-    // ATTACKS (STATE INIT)
-    // =========================
-
+    // attacks
     if (cmd.lightAttack && state_ == FighterState::Idle)
     {
         state_ = FighterState::LightAttack;
@@ -105,10 +97,6 @@ void Fighter::applyCommand(const FighterCommand& cmd)
 
 void Fighter::updateState()
 {
-    // =========================
-    // ATTACK STATE HANDLING
-    // =========================
-
     if (state_ == FighterState::LightAttack ||
         state_ == FighterState::HeavyAttack)
     {
@@ -122,19 +110,11 @@ void Fighter::updateState()
         return;
     }
 
-    // =========================
-    // AIR STATE
-    // =========================
-
     if (!grounded_)
     {
         state_ = FighterState::Jumping;
         return;
     }
-
-    // =========================
-    // GROUND STATES
-    // =========================
 
     if (crouching_)
     {
@@ -149,4 +129,28 @@ void Fighter::updateState()
     }
 
     state_ = FighterState::Idle;
+}
+
+// =========================
+// COMBAT HELPERS
+// =========================
+
+bool Fighter::isAttackActive(const Hitbox& hit) const
+{
+    // versión mínima (luego la conectamos a animación/frame system)
+    return (state_ == FighterState::LightAttack ||
+            state_ == FighterState::HeavyAttack);
+}
+
+void Fighter::applyDamage(int dmg)
+{
+    health_ -= dmg;
+
+    if (health_ < 0)
+        health_ = 0;
+}
+
+int Fighter::health() const
+{
+    return health_;
 }

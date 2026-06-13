@@ -2,11 +2,11 @@
 
 #include "Match.h"
 #include "FighterCommand.h"
+#include "Fighter.h"
 
 class Physics
 {
 public:
-
     void update(
         Match& match,
         float deltaTime,
@@ -14,10 +14,5 @@ public:
         const FighterCommand& p2);
 
 private:
-
-    void resolveFighterCollision(
-        Fighter& fighter1,
-        Fighter& fighter2);
-
     static constexpr float kGravity = -5.0f;
-};
+};  

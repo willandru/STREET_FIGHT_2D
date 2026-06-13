@@ -10,6 +10,7 @@
 #include "Renderer.h"
 #include "Shader.h"
 #include "Window.h"
+#include "CombatSystem.h"
 
 #include <glad/glad.h>
 #include <filesystem>
@@ -33,12 +34,7 @@ void renderFrame(
     const Renderer& renderer,
     const Match& match)
 {
-    glClearColor(
-        0.08f,
-        0.10f,
-        0.12f,
-        1.0f);
-
+    glClearColor(0.08f, 0.10f, 0.12f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
     renderer.draw(match.fighter1().transform());
@@ -79,6 +75,7 @@ int main(int, char* argv[])
 
     Match match;
     Physics physics;
+    CombatSystem combat;
     GameTime gameTime;
     FighterController controller;
 
@@ -98,28 +95,34 @@ int main(int, char* argv[])
         FighterCommand cmd2 = controller.build(false);
 
         // =========================
-        // APPLY COMMANDS
+        // APPLY COMMANDS (INTENT LAYER)
         // =========================
 
         fighter1.applyCommand(cmd1);
         fighter2.applyCommand(cmd2);
 
         // =========================
-        // PHYSICS
+        // PHYSICS (MOVEMENT ONLY)
         // =========================
 
         physics.update(
-        match,
-        gameTime.deltaTime(),
-        cmd1,
-        cmd2);
+            match,
+            gameTime.deltaTime(),
+            cmd1,
+            cmd2);
 
         // =========================
-        // STATE MACHINE
+        // STATE MACHINE UPDATE
         // =========================
 
         fighter1.updateState();
         fighter2.updateState();
+
+        // =========================
+        // COMBAT RESOLUTION
+        // =========================
+
+        combat.update(match);
 
         // =========================
         // RENDER

@@ -42,6 +42,7 @@ add_executable(StreetFight2D
 
     src/Input.cpp
     src/FighterController.cpp
+    src/CombatSystem.cpp
 
     src/Stage.cpp
 
