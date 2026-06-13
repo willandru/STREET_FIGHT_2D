@@ -129,6 +129,9 @@ int main(int, char* argv[])
             match,
             gameTime.deltaTime());
 
+        match.fighter1().updateState();
+        match.fighter2().updateState();
+
         renderFrame(
             renderer,
             match);

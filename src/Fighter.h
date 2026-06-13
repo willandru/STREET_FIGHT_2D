@@ -2,6 +2,7 @@
 
 #include "Transform.h"
 #include "Facing.h"
+#include "FighterState.h"
 
 class Fighter
 {
@@ -23,6 +24,11 @@ public:
     Facing facing() const;
     Facing& facing();
 
+    FighterState state() const;
+    FighterState& state();
+
+    void updateState();
+
     static constexpr float MoveSpeed = 3.0f;
     static constexpr float JumpSpeed = 6.5f;
 
@@ -35,4 +41,6 @@ private:
     bool grounded_ = false;
 
     Facing facing_ = Facing::Right;
+
+    FighterState state_ = FighterState::Idle;
 };

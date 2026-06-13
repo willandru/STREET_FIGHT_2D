@@ -58,3 +58,29 @@ Facing& Fighter::facing()
 {
     return facing_;
 }
+
+FighterState Fighter::state() const
+{
+    return state_;
+}
+
+FighterState& Fighter::state()
+{
+    return state_;
+}
+
+void Fighter::updateState()
+{
+    if (!grounded_)
+    {
+        state_ = FighterState::Jumping;
+    }
+    else if (velocityX_ != 0.0f)
+    {
+        state_ = FighterState::Walking;
+    }
+    else
+    {
+        state_ = FighterState::Idle;
+    }
+}
