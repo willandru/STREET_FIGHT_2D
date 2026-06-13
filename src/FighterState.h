@@ -4,5 +4,6 @@ enum class FighterState
 {
     Idle,
     Walking,
-    Jumping
+    Jumping,
+    Crouching
 };

@@ -4,13 +4,13 @@
 #include "GameTime.h"
 #include "Input.h"
 #include "Fighter.h"
+#include "FighterController.h"
 #include "QuadMesh.h"
 #include "Renderer.h"
 #include "Shader.h"
 #include "Window.h"
 
 #include <glad/glad.h>
-
 #include <filesystem>
 
 namespace
@@ -90,10 +90,9 @@ int main(int, char* argv[])
         quad);
 
     Match match;
-
     Physics physics;
-
     GameTime gameTime;
+    FighterController controller;
 
     while (!window.shouldClose())
     {
@@ -101,77 +100,38 @@ int main(int, char* argv[])
 
         window.processInput();
 
-        Fighter& fighter1 =
-            match.fighter1();
+        Fighter& fighter1 = match.fighter1();
+        Fighter& fighter2 = match.fighter2();
 
-        Fighter& fighter2 =
-            match.fighter2();
+        // =========================
+        // INPUT SYSTEM (CONTROLADOR)
+        // =========================
 
-        //
-        // Reset movimiento horizontal
-        //
-        fighter1.velocityX() = 0.0f;
-        fighter2.velocityX() = 0.0f;
+        controller.update(fighter1, true);
+        controller.update(fighter2, false);
 
-        //
-        // Fighter 1
-        // A D W
-        //
-        if (Input::IsKeyDown(Key::A))
-        {
-            fighter1.velocityX() =
-                -Fighter::MoveSpeed;
-        }
-
-        if (Input::IsKeyDown(Key::D))
-        {
-            fighter1.velocityX() =
-                Fighter::MoveSpeed;
-        }
-
-        if (Input::IsKeyDown(Key::W) &&
-            fighter1.grounded())
-        {
-            fighter1.velocityY() =
-                Fighter::JumpSpeed;
-        }
-
-        //
-        // Fighter 2
-        // J L I
-        //
-        if (Input::IsKeyDown(Key::J))
-        {
-            fighter2.velocityX() =
-                -Fighter::MoveSpeed;
-        }
-
-        if (Input::IsKeyDown(Key::L))
-        {
-            fighter2.velocityX() =
-                Fighter::MoveSpeed;
-        }
-
-        if (Input::IsKeyDown(Key::I) &&
-            fighter2.grounded())
-        {
-            fighter2.velocityY() =
-                Fighter::JumpSpeed;
-        }
+        // =========================
+        // PHYSICS
+        // =========================
 
         physics.update(
             match,
             gameTime.deltaTime());
 
+        // =========================
+        // STATE UPDATE
+        // =========================
+
         fighter1.updateState();
         fighter2.updateState();
 
-        renderFrame(
-            renderer,
-            match);
+        // =========================
+        // RENDER
+        // =========================
+
+        renderFrame(renderer, match);
 
         window.swapBuffers();
-
         window.pollEvents();
     }
 

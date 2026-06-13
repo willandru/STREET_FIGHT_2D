@@ -21,6 +21,9 @@ public:
     bool grounded() const;
     bool& grounded();
 
+    bool crouching() const;
+    bool& crouching();
+
     Facing facing() const;
     Facing& facing();
 
@@ -39,6 +42,9 @@ private:
     float velocityY_ = 0.0f;
 
     bool grounded_ = false;
+
+    bool crouching_ = false;
+
 
     Facing facing_ = Facing::Right;
 

@@ -84,3 +84,14 @@ void Fighter::updateState()
         state_ = FighterState::Idle;
     }
 }
+
+bool Fighter::crouching() const
+{
+    return crouching_;
+}
+
+bool& Fighter::crouching()
+{
+    return crouching_;
+}
+
