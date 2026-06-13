@@ -1,7 +1,9 @@
 #include "Physics.h"
+
 #include "Fighter.h"
 #include "Transform.h"
 #include "Stage.h"
+#include "Facing.h"
 
 namespace
 {
@@ -14,9 +16,11 @@ void updateFighter(
     float leftBoundary,
     float rightBoundary)
 {
-    Transform& transform = fighter.transform();
+    Transform& t = fighter.transform();
 
-    fighter.grounded() = false;
+    // =========================
+    // INPUT (solo intención)
+    // =========================
     fighter.crouching() = cmd.crouch;
 
     fighter.velocityX() = 0.0f;
@@ -27,31 +31,54 @@ void updateFighter(
     if (cmd.moveRight)
         fighter.velocityX() = Fighter::MoveSpeed;
 
-    if (cmd.jump && fighter.grounded())
-        fighter.velocityY() = Fighter::JumpSpeed;
+    // =========================
+    // SALTO (usa estado previo)
+    // =========================
+    const bool wasGrounded = fighter.grounded();
 
+    if (cmd.jump && wasGrounded)
+    {
+        fighter.velocityY() = Fighter::JumpSpeed;
+    }
+
+    // =========================
+    // GRAVEDAD
+    // =========================
     fighter.velocityY() += gravity * deltaTime;
 
-    transform.x += fighter.velocityX() * deltaTime;
-    transform.y += fighter.velocityY() * deltaTime;
+    // =========================
+    // INTEGRACIÓN FÍSICA
+    // =========================
+    t.x += fighter.velocityX() * deltaTime;
+    t.y += fighter.velocityY() * deltaTime;
 
-    const float halfH = transform.height * 0.5f;
-    const float bottom = transform.y - halfH;
+    // =========================
+    // COLISIÓN CON SUELO
+    // =========================
+    const float halfH = t.height * 0.5f;
+    const float bottom = t.y - halfH;
 
     if (bottom <= groundY)
     {
-        transform.y = groundY + halfH;
+        t.y = groundY + halfH;
         fighter.velocityY() = 0.0f;
         fighter.grounded() = true;
     }
+    else
+    {
+        fighter.grounded() = false;
+    }
 
-    const float halfW = transform.width * 0.5f;
+    // =========================
+    // BORDES DEL STAGE
+    // =========================
+    const float halfW = t.width * 0.5f;
 
-    if (transform.x - halfW < leftBoundary)
-        transform.x = leftBoundary + halfW;
+    if (t.x - halfW < leftBoundary)
+        t.x = leftBoundary + halfW;
 
-    if (transform.x + halfW > rightBoundary)
-        transform.x = rightBoundary - halfW;
+    if (t.x + halfW > rightBoundary)
+        t.x = rightBoundary - halfW;
 }
 }
 

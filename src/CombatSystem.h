@@ -1,16 +1,18 @@
 #pragma once
 
 #include "Match.h"
-#include "Fighter.h"
 #include "CombatTypes.h"
+
+class Fighter;
+class FighterStateMachine;
 
 class CombatSystem
 {
 public:
-    void update(Match& match);
+    void update(Match& match, FighterStateMachine& stateMachine);
 
 private:
-    void checkFighterPair(Fighter& a, Fighter& b);
+    void checkFighterPair(Fighter& a, Fighter& b, FighterStateMachine& stateMachine);
 
     bool checkOverlap(
         float ax, float ay, float aw, float ah,

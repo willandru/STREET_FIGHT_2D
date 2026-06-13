@@ -35,6 +35,9 @@ add_executable(StreetFight2D
     src/Renderer.cpp
 
     src/Fighter.cpp
+    src/FighterStateMachine.cpp
+
+
     src/Match.cpp
 
     src/Physics.cpp

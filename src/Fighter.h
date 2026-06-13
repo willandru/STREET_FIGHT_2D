@@ -3,7 +3,6 @@
 #include "Transform.h"
 #include "Facing.h"
 #include "FighterState.h"
-#include "FighterCommand.h"
 #include "CombatTypes.h"
 
 #include <vector>
@@ -40,11 +39,6 @@ public:
     const std::vector<Hitbox>& hitboxes() const;
     std::vector<Hitbox>& hitboxes();
 
-    void applyCommand(const FighterCommand& cmd);
-    void updateState();
-
-    bool isAttackActive(const Hitbox& hit) const;
-
     void applyDamage(int dmg);
     int health() const;
 
@@ -63,7 +57,6 @@ private:
     Facing facing_ = Facing::Right;
     FighterState state_ = FighterState::Idle;
 
-    float stateTimer_ = 0.0f;
     int health_ = 100;
 
     Hurtbox hurtbox_;

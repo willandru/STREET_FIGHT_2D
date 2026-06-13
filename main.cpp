@@ -11,6 +11,7 @@
 #include "Shader.h"
 #include "Window.h"
 #include "CombatSystem.h"
+#include "FighterStateMachine.h"
 
 #include <glad/glad.h>
 #include <filesystem>
@@ -76,6 +77,7 @@ int main(int, char* argv[])
     Match match;
     Physics physics;
     CombatSystem combat;
+    FighterStateMachine stateMachine;
     GameTime gameTime;
     FighterController controller;
 
@@ -95,11 +97,11 @@ int main(int, char* argv[])
         FighterCommand cmd2 = controller.build(false);
 
         // =========================
-        // APPLY COMMANDS (INTENT LAYER)
+        // STATE MACHINE (INPUT LOGIC)
         // =========================
 
-        fighter1.applyCommand(cmd1);
-        fighter2.applyCommand(cmd2);
+        stateMachine.applyCommand(fighter1, cmd1);
+        stateMachine.applyCommand(fighter2, cmd2);
 
         // =========================
         // PHYSICS (MOVEMENT ONLY)
@@ -112,17 +114,17 @@ int main(int, char* argv[])
             cmd2);
 
         // =========================
-        // STATE MACHINE UPDATE
+        // STATE UPDATE (POST PHYSICS)
         // =========================
 
-        fighter1.updateState();
-        fighter2.updateState();
+        stateMachine.updateState(fighter1);
+        stateMachine.updateState(fighter2);
 
         // =========================
         // COMBAT RESOLUTION
         // =========================
 
-        combat.update(match);
+        combat.update(match, stateMachine);
 
         // =========================
         // RENDER

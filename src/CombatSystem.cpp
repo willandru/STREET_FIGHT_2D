@@ -1,15 +1,18 @@
 #include "CombatSystem.h"
 
-#include "Match.h"
 #include "Fighter.h"
+#include "FighterStateMachine.h"
 #include "Transform.h"
 
-void CombatSystem::update(Match& match)
+void CombatSystem::update(Match& match, FighterStateMachine& stateMachine)
 {
-    checkFighterPair(match.fighter1(), match.fighter2());
+    checkFighterPair(match.fighter1(), match.fighter2(), stateMachine);
 }
 
-void CombatSystem::checkFighterPair(Fighter& a, Fighter& b)
+void CombatSystem::checkFighterPair(
+    Fighter& a,
+    Fighter& b,
+    FighterStateMachine& stateMachine)
 {
     const Transform& ta = a.transform();
     const Transform& tb = b.transform();
@@ -28,7 +31,7 @@ void CombatSystem::checkFighterPair(Fighter& a, Fighter& b)
     // =========================
     for (const Hitbox& hit : a.hitboxes())
     {
-        if (!a.isAttackActive(hit))
+        if (!stateMachine.isAttackActive(a))
             continue;
 
         float hx = ta.x + hit.offsetX;
@@ -48,7 +51,7 @@ void CombatSystem::checkFighterPair(Fighter& a, Fighter& b)
     // =========================
     for (const Hitbox& hit : b.hitboxes())
     {
-        if (!b.isAttackActive(hit))
+        if (!stateMachine.isAttackActive(b))
             continue;
 
         float hx = tb.x + hit.offsetX;
@@ -90,8 +93,4 @@ bool CombatSystem::checkOverlap(
 void CombatSystem::processHit(Fighter& attacker, Fighter& victim, int damage)
 {
     victim.applyDamage(damage);
-
-    // futuro (extensión del sistema):
-    // victim.setHitstun(...)
-    // victim.applyKnockback(...)
 }

@@ -2,7 +2,6 @@
 
 #include "Match.h"
 #include "FighterCommand.h"
-#include "Fighter.h"
 
 class Physics
 {
@@ -15,4 +14,4 @@ public:
 
 private:
     static constexpr float kGravity = -5.0f;
-};  
+};
