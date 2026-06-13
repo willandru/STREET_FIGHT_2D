@@ -8,12 +8,19 @@ enum class Key
     A,
     S,
     D,
+
+    I,
+    J,
+    K,
+    L,
+
     Space
 };
 
 class Input
 {
 public:
+
     static void Initialize(
         GLFWwindow* window);
 
@@ -21,5 +28,6 @@ public:
         Key key);
 
 private:
+
     static GLFWwindow* window_;
 };

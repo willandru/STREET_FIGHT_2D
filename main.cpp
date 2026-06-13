@@ -104,8 +104,19 @@ int main(int, char* argv[])
         Fighter& fighter1 =
             match.fighter1();
 
-        fighter1.velocityX() = 0.0f;
+        Fighter& fighter2 =
+            match.fighter2();
 
+        //
+        // Reset movimiento horizontal
+        //
+        fighter1.velocityX() = 0.0f;
+        fighter2.velocityX() = 0.0f;
+
+        //
+        // Fighter 1
+        // A D W
+        //
         if (Input::IsKeyDown(Key::A))
         {
             fighter1.velocityX() =
@@ -125,12 +136,35 @@ int main(int, char* argv[])
                 Fighter::JumpSpeed;
         }
 
+        //
+        // Fighter 2
+        // J L I
+        //
+        if (Input::IsKeyDown(Key::J))
+        {
+            fighter2.velocityX() =
+                -Fighter::MoveSpeed;
+        }
+
+        if (Input::IsKeyDown(Key::L))
+        {
+            fighter2.velocityX() =
+                Fighter::MoveSpeed;
+        }
+
+        if (Input::IsKeyDown(Key::I) &&
+            fighter2.grounded())
+        {
+            fighter2.velocityY() =
+                Fighter::JumpSpeed;
+        }
+
         physics.update(
             match,
             gameTime.deltaTime());
 
-        match.fighter1().updateState();
-        match.fighter2().updateState();
+        fighter1.updateState();
+        fighter2.updateState();
 
         renderFrame(
             renderer,

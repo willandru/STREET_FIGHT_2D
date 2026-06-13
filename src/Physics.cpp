@@ -80,11 +80,16 @@ namespace
         }
     }
 }
-
 void Physics::resolveFighterCollision(
     Fighter& fighter1,
     Fighter& fighter2)
 {
+    if (!fighter1.grounded() ||
+        !fighter2.grounded())
+    {
+        return;
+    }
+
     Transform& transform1 =
         fighter1.transform();
 
@@ -107,7 +112,6 @@ void Physics::resolveFighterCollision(
         transform2.x +
         transform2.width * 0.5f;
 
-    // No overlap
     if (right1 <= left2 ||
         left1 >= right2)
     {

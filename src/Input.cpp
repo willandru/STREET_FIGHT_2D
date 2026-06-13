@@ -38,6 +38,22 @@ bool Input::IsKeyDown(
         glfwKey = GLFW_KEY_D;
         break;
 
+    case Key::I:
+        glfwKey = GLFW_KEY_I;
+        break;
+
+    case Key::J:
+        glfwKey = GLFW_KEY_J;
+        break;
+
+    case Key::K:
+        glfwKey = GLFW_KEY_K;
+        break;
+
+    case Key::L:
+        glfwKey = GLFW_KEY_L;
+        break;
+
     case Key::Space:
         glfwKey = GLFW_KEY_SPACE;
         break;
