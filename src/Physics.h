@@ -12,5 +12,9 @@ public:
 
 private:
 
+    void resolveFighterCollision(
+        Fighter& fighter1,
+        Fighter& fighter2);
+
     static constexpr float kGravity = -5.0f;
 };

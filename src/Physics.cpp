@@ -1,5 +1,7 @@
 #include "Physics.h"
 
+#include <algorithm>
+
 namespace
 {
     void updateFighter(
@@ -79,6 +81,58 @@ namespace
     }
 }
 
+void Physics::resolveFighterCollision(
+    Fighter& fighter1,
+    Fighter& fighter2)
+{
+    Transform& transform1 =
+        fighter1.transform();
+
+    Transform& transform2 =
+        fighter2.transform();
+
+    const float left1 =
+        transform1.x -
+        transform1.width * 0.5f;
+
+    const float right1 =
+        transform1.x +
+        transform1.width * 0.5f;
+
+    const float left2 =
+        transform2.x -
+        transform2.width * 0.5f;
+
+    const float right2 =
+        transform2.x +
+        transform2.width * 0.5f;
+
+    // No overlap
+    if (right1 <= left2 ||
+        left1 >= right2)
+    {
+        return;
+    }
+
+    const float overlap =
+        std::min(right1, right2) -
+        std::max(left1, left2);
+
+    const float separation =
+        overlap * 0.5f;
+
+    if (transform1.x < transform2.x)
+    {
+        transform1.x -= separation;
+        transform2.x += separation;
+    }
+    else
+    {
+        transform1.x += separation;
+        transform2.x -= separation;
+    }
+}
+
 void Physics::update(
     Match& match,
     float deltaTime)
@@ -107,6 +161,14 @@ void Physics::update(
         groundY,
         leftBoundary,
         rightBoundary);
+
+    // =========================
+    // FIGHTER COLLISION
+    // =========================
+
+    resolveFighterCollision(
+        match.fighter1(),
+        match.fighter2());
 
     // =========================
     // FACING UPDATE
