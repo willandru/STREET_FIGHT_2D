@@ -1,10 +1,9 @@
 #pragma once
 
-#include "Input.h"
-#include "Fighter.h"
+#include "FighterCommand.h"
 
 class FighterController
 {
 public:
-    void update(Fighter& fighter, bool isPlayer1);
+    FighterCommand build(bool isPlayer1);
 };

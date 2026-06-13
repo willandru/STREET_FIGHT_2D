@@ -57,9 +57,13 @@ bool Input::IsKeyDown(
     case Key::Space:
         glfwKey = GLFW_KEY_SPACE;
         break;
+
+    case Key::U:
+        glfwKey = GLFW_KEY_U;
+        break;
     }
 
     return glfwGetKey(
-               window_,
-               glfwKey) == GLFW_PRESS;
+        window_,
+        glfwKey) == GLFW_PRESS;
 }

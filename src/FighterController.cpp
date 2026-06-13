@@ -1,36 +1,30 @@
 #include "FighterController.h"
+#include "Input.h"
 
-void FighterController::update(Fighter& fighter, bool isPlayer1)
+FighterCommand FighterController::build(bool isPlayer1)
 {
-    fighter.velocityX() = 0.0f;
-    fighter.crouching() = false;
+    FighterCommand cmd;
 
     if (isPlayer1)
     {
-        if (Input::IsKeyDown(Key::A))
-            fighter.velocityX() = -Fighter::MoveSpeed;
+        cmd.moveLeft = Input::IsKeyDown(Key::A);
+        cmd.moveRight = Input::IsKeyDown(Key::D);
+        cmd.jump = Input::IsKeyDown(Key::W);
+        cmd.crouch = Input::IsKeyDown(Key::S);
 
-        if (Input::IsKeyDown(Key::D))
-            fighter.velocityX() = Fighter::MoveSpeed;
-
-        if (Input::IsKeyDown(Key::W) && fighter.grounded())
-            fighter.velocityY() = Fighter::JumpSpeed;
-
-        if (Input::IsKeyDown(Key::S))
-            fighter.crouching() = true;
+        cmd.lightAttack = Input::IsKeyDown(Key::Space);
+        cmd.heavyAttack = false;
     }
     else
     {
-        if (Input::IsKeyDown(Key::J))
-            fighter.velocityX() = -Fighter::MoveSpeed;
+        cmd.moveLeft = Input::IsKeyDown(Key::J);
+        cmd.moveRight = Input::IsKeyDown(Key::L);
+        cmd.jump = Input::IsKeyDown(Key::I);
+        cmd.crouch = Input::IsKeyDown(Key::K);
 
-        if (Input::IsKeyDown(Key::L))
-            fighter.velocityX() = Fighter::MoveSpeed;
-
-        if (Input::IsKeyDown(Key::I) && fighter.grounded())
-            fighter.velocityY() = Fighter::JumpSpeed;
-
-        if (Input::IsKeyDown(Key::K))
-            fighter.crouching() = true;
+        cmd.lightAttack = Input::IsKeyDown(Key::U);
+        cmd.heavyAttack = false;
     }
+
+    return cmd;
 }

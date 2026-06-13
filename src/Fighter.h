@@ -3,6 +3,7 @@
 #include "Transform.h"
 #include "Facing.h"
 #include "FighterState.h"
+#include "FighterCommand.h"
 
 class Fighter
 {
@@ -31,6 +32,7 @@ public:
     FighterState& state();
 
     void updateState();
+    void applyCommand(const FighterCommand& cmd);
 
     static constexpr float MoveSpeed = 3.0f;
     static constexpr float JumpSpeed = 6.5f;
@@ -42,11 +44,10 @@ private:
     float velocityY_ = 0.0f;
 
     bool grounded_ = false;
-
     bool crouching_ = false;
 
+    float stateTimer_ = 0.0f;
 
     Facing facing_ = Facing::Right;
-
     FighterState state_ = FighterState::Idle;
 };

@@ -14,7 +14,8 @@ enum class Key
     K,
     L,
 
-    Space
+    Space,
+    U
 };
 
 class Input

@@ -5,5 +5,8 @@ enum class FighterState
     Idle,
     Walking,
     Jumping,
-    Crouching
+    Crouching,
+
+    LightAttack,
+    HeavyAttack
 };

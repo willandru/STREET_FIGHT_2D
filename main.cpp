@@ -5,6 +5,7 @@
 #include "Input.h"
 #include "Fighter.h"
 #include "FighterController.h"
+#include "FighterCommand.h"
 #include "QuadMesh.h"
 #include "Renderer.h"
 #include "Shader.h"
@@ -40,11 +41,8 @@ void renderFrame(
 
     glClear(GL_COLOR_BUFFER_BIT);
 
-    renderer.draw(
-        match.fighter1().transform());
-
-    renderer.draw(
-        match.fighter2().transform());
+    renderer.draw(match.fighter1().transform());
+    renderer.draw(match.fighter2().transform());
 }
 }
 
@@ -53,9 +51,7 @@ int main(int, char* argv[])
     GlfwContext glfw;
 
     if (!glfw.isValid())
-    {
         return 1;
-    }
 
     Window window(
         kWindowWidth,
@@ -63,12 +59,9 @@ int main(int, char* argv[])
         kWindowTitle);
 
     if (!window.isValid())
-    {
         return 1;
-    }
 
-    Input::Initialize(
-        window.glfwHandle());
+    Input::Initialize(window.glfwHandle());
 
     const std::filesystem::path shaderDirectory =
         getExecutableDirectory(argv[0]);
@@ -79,15 +72,10 @@ int main(int, char* argv[])
 
     QuadMesh quad;
 
-    if (!shader.isValid() ||
-        !quad.isValid())
-    {
+    if (!shader.isValid() || !quad.isValid())
         return 1;
-    }
 
-    Renderer renderer(
-        shader,
-        quad);
+    Renderer renderer(shader, quad);
 
     Match match;
     Physics physics;
@@ -97,29 +85,37 @@ int main(int, char* argv[])
     while (!window.shouldClose())
     {
         gameTime.update();
-
         window.processInput();
 
         Fighter& fighter1 = match.fighter1();
         Fighter& fighter2 = match.fighter2();
 
         // =========================
-        // INPUT SYSTEM (CONTROLADOR)
+        // INPUT → COMMAND
         // =========================
 
-        controller.update(fighter1, true);
-        controller.update(fighter2, false);
+        FighterCommand cmd1 = controller.build(true);
+        FighterCommand cmd2 = controller.build(false);
+
+        // =========================
+        // APPLY COMMANDS
+        // =========================
+
+        fighter1.applyCommand(cmd1);
+        fighter2.applyCommand(cmd2);
 
         // =========================
         // PHYSICS
         // =========================
 
         physics.update(
-            match,
-            gameTime.deltaTime());
+        match,
+        gameTime.deltaTime(),
+        cmd1,
+        cmd2);
 
         // =========================
-        // STATE UPDATE
+        // STATE MACHINE
         // =========================
 
         fighter1.updateState();
