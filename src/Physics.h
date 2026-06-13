@@ -1,18 +1,18 @@
 #pragma once
 
-#include "Level.h"
+#include "Match.h"
 
 class Physics
 {
 public:
+
     void update(
-        Level& level,
+        Match& match,
         float deltaTime);
 
 private:
-    bool intersects(
-        const Transform& a,
-        const Transform& b) const;
 
     static constexpr float kGravity = -5.0f;
+
+    static constexpr float kGroundY = -0.80f;
 };

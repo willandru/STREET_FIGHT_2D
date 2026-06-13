@@ -1,9 +1,9 @@
 #include "GlfwContext.h"
-#include "Level.h"
+#include "Match.h"
 #include "Physics.h"
 #include "GameTime.h"
 #include "Input.h"
-#include "Player.h"
+#include "Fighter.h"
 #include "QuadMesh.h"
 #include "Renderer.h"
 #include "Shader.h"
@@ -18,7 +18,7 @@ namespace
 constexpr int kWindowWidth = 800;
 constexpr int kWindowHeight = 600;
 
-constexpr char kWindowTitle[] = "2D Engine";
+constexpr char kWindowTitle[] = "Street Fighter 2D";
 
 constexpr char kVertexShaderPath[] = "triangle.vert";
 constexpr char kFragmentShaderPath[] = "triangle.frag";
@@ -30,7 +30,7 @@ std::filesystem::path getExecutableDirectory(char* executablePath)
 
 void renderFrame(
     const Renderer& renderer,
-    const Level& level)
+    const Match& match)
 {
     glClearColor(
         0.08f,
@@ -40,14 +40,11 @@ void renderFrame(
 
     glClear(GL_COLOR_BUFFER_BIT);
 
-    for (const auto& platform : level.platforms())
-    {
-        renderer.draw(
-            platform.transform());
-    }
+    renderer.draw(
+        match.fighter1().transform());
 
     renderer.draw(
-        level.player().transform());
+        match.fighter2().transform());
 }
 }
 
@@ -92,7 +89,7 @@ int main(int, char* argv[])
         shader,
         quad);
 
-    Level level;
+    Match match;
 
     Physics physics;
 
@@ -104,37 +101,37 @@ int main(int, char* argv[])
 
         window.processInput();
 
-        Player& player =
-            level.player();
+        Fighter& fighter1 =
+            match.fighter1();
 
-        player.velocityX() = 0.0f;
+        fighter1.velocityX() = 0.0f;
 
         if (Input::IsKeyDown(Key::A))
         {
-            player.velocityX() =
-                -Player::MoveSpeed;
+            fighter1.velocityX() =
+                -Fighter::MoveSpeed;
         }
 
         if (Input::IsKeyDown(Key::D))
         {
-            player.velocityX() =
-                Player::MoveSpeed;
+            fighter1.velocityX() =
+                Fighter::MoveSpeed;
         }
 
         if (Input::IsKeyDown(Key::W) &&
-            player.grounded())
+            fighter1.grounded())
         {
-            player.velocityY() =
-                Player::JumpSpeed;
+            fighter1.velocityY() =
+                Fighter::JumpSpeed;
         }
 
         physics.update(
-            level,
+            match,
             gameTime.deltaTime());
 
         renderFrame(
             renderer,
-            level);
+            match);
 
         window.swapBuffers();
 

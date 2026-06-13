@@ -1,6 +1,6 @@
-#include "Player.h"
+#include "Fighter.h"
 
-Player::Player()
+Fighter::Fighter()
 {
     transform_.x = 0.6f;
     transform_.y = 0.20f;
@@ -9,42 +9,42 @@ Player::Player()
     transform_.height = 0.30f;
 }
 
-const Transform& Player::transform() const
+const Transform& Fighter::transform() const
 {
     return transform_;
 }
 
-Transform& Player::transform()
+Transform& Fighter::transform()
 {
     return transform_;
 }
 
-float Player::velocityX() const
+float Fighter::velocityX() const
 {
     return velocityX_;
 }
 
-float& Player::velocityX()
+float& Fighter::velocityX()
 {
     return velocityX_;
 }
 
-float Player::velocityY() const
+float Fighter::velocityY() const
 {
     return velocityY_;
 }
 
-float& Player::velocityY()
+float& Fighter::velocityY()
 {
     return velocityY_;
 }
 
-bool Player::grounded() const
+bool Fighter::grounded() const
 {
     return grounded_;
 }
 
-bool& Player::grounded()
+bool& Fighter::grounded()
 {
     return grounded_;
 }

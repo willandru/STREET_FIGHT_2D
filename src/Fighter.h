@@ -2,10 +2,10 @@
 
 #include "Transform.h"
 
-class Player
+class Fighter
 {
 public:
-    Player();
+    Fighter();
 
     const Transform& transform() const;
     Transform& transform();

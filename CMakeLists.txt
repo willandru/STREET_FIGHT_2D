@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(Engine2D LANGUAGES C CXX)
+project(StreetFight2D LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -24,7 +24,7 @@ target_include_directories(glad PUBLIC
 # =========================================================
 # EXECUTABLE
 # =========================================================
-add_executable(Engine2D
+add_executable(StreetFight2D
     main.cpp
 
     src/GlfwContext.cpp
@@ -34,9 +34,8 @@ add_executable(Engine2D
     src/QuadMesh.cpp
     src/Renderer.cpp
 
-    src/Platform.cpp
-    src/Player.cpp
-    src/Level.cpp
+    src/Fighter.cpp
+    src/Match.cpp
 
     src/Physics.cpp
     src/GameTime.cpp
@@ -46,7 +45,7 @@ add_executable(Engine2D
 # =========================================================
 # INCLUDE DIRS
 # =========================================================
-target_include_directories(Engine2D PRIVATE
+target_include_directories(StreetFight2D PRIVATE
     src
 
     externals/glad/include
@@ -56,7 +55,7 @@ target_include_directories(Engine2D PRIVATE
 )
 
 target_compile_definitions(
-    Engine2D PRIVATE
+    StreetFight2D PRIVATE
     GLFW_INCLUDE_NONE
 )
 
@@ -64,7 +63,7 @@ target_compile_definitions(
 # LINK
 # =========================================================
 target_link_libraries(
-    Engine2D PRIVATE
+    StreetFight2D PRIVATE
     glfw
     glad
     opengl32
@@ -74,10 +73,10 @@ target_link_libraries(
 # COPY SHADERS
 # =========================================================
 add_custom_command(
-    TARGET Engine2D POST_BUILD
+    TARGET StreetFight2D POST_BUILD
 
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
         ${CMAKE_SOURCE_DIR}/triangle.vert
         ${CMAKE_SOURCE_DIR}/triangle.frag
-        $<TARGET_FILE_DIR:Engine2D>
+        $<TARGET_FILE_DIR:StreetFight2D>
 )
