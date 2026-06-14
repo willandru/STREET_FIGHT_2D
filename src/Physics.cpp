@@ -16,69 +16,95 @@ void updateFighter(
     float leftBoundary,
     float rightBoundary)
 {
-    Transform& t = fighter.transform();
+    Transform& t = fighter.physics.transform;
 
     // =========================
-    // INPUT (solo intención)
+    // INPUT DE MOVIMIENTO
     // =========================
-    fighter.crouching() = cmd.crouch;
 
-    fighter.velocityX() = 0.0f;
+    fighter.crouching = cmd.crouch;
+
+    fighter.physics.velocityX = 0.0f;
 
     if (cmd.moveLeft)
-        fighter.velocityX() = -Fighter::MoveSpeed;
+    {
+        fighter.physics.velocityX = -Fighter::MoveSpeed;
+    }
 
     if (cmd.moveRight)
-        fighter.velocityX() = Fighter::MoveSpeed;
+    {
+        fighter.physics.velocityX = Fighter::MoveSpeed;
+    }
 
     // =========================
-    // SALTO (usa estado previo)
+    // SALTO
     // =========================
-    const bool wasGrounded = fighter.grounded();
+
+    const bool wasGrounded =
+        fighter.physics.grounded;
 
     if (cmd.jump && wasGrounded)
     {
-        fighter.velocityY() = Fighter::JumpSpeed;
+        fighter.physics.velocityY =
+            Fighter::JumpSpeed;
     }
 
     // =========================
     // GRAVEDAD
     // =========================
-    fighter.velocityY() += gravity * deltaTime;
+
+    fighter.physics.velocityY +=
+        gravity * deltaTime;
 
     // =========================
-    // INTEGRACIÓN FÍSICA
+    // INTEGRACIÓN
     // =========================
-    t.x += fighter.velocityX() * deltaTime;
-    t.y += fighter.velocityY() * deltaTime;
+
+    t.x +=
+        fighter.physics.velocityX * deltaTime;
+
+    t.y +=
+        fighter.physics.velocityY * deltaTime;
 
     // =========================
     // COLISIÓN CON SUELO
     // =========================
-    const float halfH = t.height * 0.5f;
-    const float bottom = t.y - halfH;
+
+    const float halfH =
+        t.height * 0.5f;
+
+    const float bottom =
+        t.y - halfH;
 
     if (bottom <= groundY)
     {
         t.y = groundY + halfH;
-        fighter.velocityY() = 0.0f;
-        fighter.grounded() = true;
+
+        fighter.physics.velocityY = 0.0f;
+
+        fighter.physics.grounded = true;
     }
     else
     {
-        fighter.grounded() = false;
+        fighter.physics.grounded = false;
     }
 
     // =========================
-    // BORDES DEL STAGE
+    // LÍMITES DEL STAGE
     // =========================
-    const float halfW = t.width * 0.5f;
+
+    const float halfW =
+        t.width * 0.5f;
 
     if (t.x - halfW < leftBoundary)
+    {
         t.x = leftBoundary + halfW;
+    }
 
     if (t.x + halfW > rightBoundary)
+    {
         t.x = rightBoundary - halfW;
+    }
 }
 }
 
@@ -88,24 +114,52 @@ void Physics::update(
     const FighterCommand& p1,
     const FighterCommand& p2)
 {
-    const float groundY = match.stage().groundY();
-    const float leftBoundary = match.stage().leftBoundary();
-    const float rightBoundary = match.stage().rightBoundary();
+    const float groundY =
+        match.stage().groundY();
 
-    updateFighter(match.fighter1(), p1, deltaTime, kGravity,
-                  groundY, leftBoundary, rightBoundary);
+    const float leftBoundary =
+        match.stage().leftBoundary();
 
-    updateFighter(match.fighter2(), p2, deltaTime, kGravity,
-                  groundY, leftBoundary, rightBoundary);
+    const float rightBoundary =
+        match.stage().rightBoundary();
 
-    if (match.fighter1().transform().x < match.fighter2().transform().x)
+    updateFighter(
+        match.fighter1(),
+        p1,
+        deltaTime,
+        kGravity,
+        groundY,
+        leftBoundary,
+        rightBoundary);
+
+    updateFighter(
+        match.fighter2(),
+        p2,
+        deltaTime,
+        kGravity,
+        groundY,
+        leftBoundary,
+        rightBoundary);
+
+    // =========================
+    // FACING
+    // =========================
+
+    if (match.fighter1().physics.transform.x <
+        match.fighter2().physics.transform.x)
     {
-        match.fighter1().facing() = Facing::Right;
-        match.fighter2().facing() = Facing::Left;
+        match.fighter1().facing =
+            Facing::Right;
+
+        match.fighter2().facing =
+            Facing::Left;
     }
     else
     {
-        match.fighter1().facing() = Facing::Left;
-        match.fighter2().facing() = Facing::Right;
+        match.fighter1().facing =
+            Facing::Left;
+
+        match.fighter2().facing =
+            Facing::Right;
     }
 }

@@ -6,7 +6,10 @@
 class FighterStateMachine
 {
 public:
-    void applyCommand(Fighter& fighter, const FighterCommand& cmd);
-    void updateState(Fighter& fighter);
-    bool isAttackActive(const Fighter& fighter);
+    void update(
+        Fighter& fighter,
+        const FighterCommand& cmd);
+
+    bool isAttackActive(
+        const Fighter& fighter) const;
 };

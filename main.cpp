@@ -38,8 +38,11 @@ void renderFrame(
     glClearColor(0.08f, 0.10f, 0.12f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    renderer.draw(match.fighter1().transform());
-    renderer.draw(match.fighter2().transform());
+    renderer.draw(
+        match.fighter1().physics.transform);
+
+    renderer.draw(
+        match.fighter2().physics.transform);
 }
 }
 
@@ -84,27 +87,24 @@ int main(int, char* argv[])
     while (!window.shouldClose())
     {
         gameTime.update();
+
         window.processInput();
 
         Fighter& fighter1 = match.fighter1();
         Fighter& fighter2 = match.fighter2();
 
         // =========================
-        // INPUT → COMMAND
+        // INPUT -> COMMAND
         // =========================
 
-        FighterCommand cmd1 = controller.build(true);
-        FighterCommand cmd2 = controller.build(false);
+        FighterCommand cmd1 =
+            controller.build(true);
+
+        FighterCommand cmd2 =
+            controller.build(false);
 
         // =========================
-        // STATE MACHINE (INPUT LOGIC)
-        // =========================
-
-        stateMachine.applyCommand(fighter1, cmd1);
-        stateMachine.applyCommand(fighter2, cmd2);
-
-        // =========================
-        // PHYSICS (MOVEMENT ONLY)
+        // PHYSICS
         // =========================
 
         physics.update(
@@ -114,25 +114,35 @@ int main(int, char* argv[])
             cmd2);
 
         // =========================
-        // STATE UPDATE (POST PHYSICS)
+        // STATE MACHINE
         // =========================
 
-        stateMachine.updateState(fighter1);
-        stateMachine.updateState(fighter2);
+        stateMachine.update(
+            fighter1,
+            cmd1);
+
+        stateMachine.update(
+            fighter2,
+            cmd2);
 
         // =========================
-        // COMBAT RESOLUTION
+        // COMBAT
         // =========================
 
-        combat.update(match, stateMachine);
+        combat.update(
+            match,
+            stateMachine);
 
         // =========================
         // RENDER
         // =========================
 
-        renderFrame(renderer, match);
+        renderFrame(
+            renderer,
+            match);
 
         window.swapBuffers();
+
         window.pollEvents();
     }
 

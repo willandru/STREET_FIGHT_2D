@@ -2,11 +2,11 @@
 
 Match::Match()
 {
-    fighter1_.transform().x = -0.5f;
-    fighter1_.transform().y = -0.4f;
+    fighter1_.physics.transform.x = -0.5f;
+    fighter1_.physics.transform.y = -0.4f;
 
-    fighter2_.transform().x = 0.5f;
-    fighter2_.transform().y = -0.4f;
+    fighter2_.physics.transform.x = 0.5f;
+    fighter2_.physics.transform.y = -0.4f;
 }
 
 const Fighter& Match::fighter1() const
