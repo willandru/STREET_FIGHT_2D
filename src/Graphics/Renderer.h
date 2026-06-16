@@ -4,6 +4,7 @@
 #include "Shader.h"
 #include "Texture.h"
 #include "Transform.h"
+#include "Facing.h"
 
 class Renderer
 {
@@ -14,7 +15,8 @@ public:
         const Texture& texture);
 
     void draw(
-        const Transform& transform) const;
+        const Transform& transform,
+        Facing facing) const;
 
 private:
     const Shader& shader_;

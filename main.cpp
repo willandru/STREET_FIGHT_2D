@@ -47,10 +47,12 @@ void renderFrame(
         GL_COLOR_BUFFER_BIT);
 
     renderer.draw(
-        match.fighter1().physics.transform);
+        match.fighter1().physics.transform,
+        match.fighter1().facing);
 
     renderer.draw(
-        match.fighter2().physics.transform);
+        match.fighter2().physics.transform,
+        match.fighter2().facing);
 }
 }
 

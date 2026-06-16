@@ -1,9 +1,9 @@
 #include "Physics.h"
 
-#include "Fighter.h"
-#include "Transform.h"
-#include "Stage.h"
 #include "Facing.h"
+#include "Fighter.h"
+#include "Stage.h"
+#include "Transform.h"
 
 namespace
 {
@@ -16,24 +16,29 @@ void updateFighter(
     float leftBoundary,
     float rightBoundary)
 {
-    Transform& t = fighter.physics.transform;
+    Transform& t =
+        fighter.physics.transform;
 
     // =========================
     // INPUT DE MOVIMIENTO
     // =========================
 
-    fighter.crouching = cmd.crouch;
+    fighter.crouching =
+        cmd.crouch;
 
-    fighter.physics.velocityX = 0.0f;
+    fighter.physics.velocityX =
+        0.0f;
 
     if (cmd.moveLeft)
     {
-        fighter.physics.velocityX = -Fighter::MoveSpeed;
+        fighter.physics.velocityX =
+            -Fighter::MoveSpeed;
     }
 
     if (cmd.moveRight)
     {
-        fighter.physics.velocityX = Fighter::MoveSpeed;
+        fighter.physics.velocityX =
+            Fighter::MoveSpeed;
     }
 
     // =========================
@@ -61,10 +66,12 @@ void updateFighter(
     // =========================
 
     t.x +=
-        fighter.physics.velocityX * deltaTime;
+        fighter.physics.velocityX *
+        deltaTime;
 
     t.y +=
-        fighter.physics.velocityY * deltaTime;
+        fighter.physics.velocityY *
+        deltaTime;
 
     // =========================
     // COLISIÓN CON SUELO
@@ -78,15 +85,19 @@ void updateFighter(
 
     if (bottom <= groundY)
     {
-        t.y = groundY + halfH;
+        t.y =
+            groundY + halfH;
 
-        fighter.physics.velocityY = 0.0f;
+        fighter.physics.velocityY =
+            0.0f;
 
-        fighter.physics.grounded = true;
+        fighter.physics.grounded =
+            true;
     }
     else
     {
-        fighter.physics.grounded = false;
+        fighter.physics.grounded =
+            false;
     }
 
     // =========================
@@ -98,12 +109,14 @@ void updateFighter(
 
     if (t.x - halfW < leftBoundary)
     {
-        t.x = leftBoundary + halfW;
+        t.x =
+            leftBoundary + halfW;
     }
 
     if (t.x + halfW > rightBoundary)
     {
-        t.x = rightBoundary - halfW;
+        t.x =
+            rightBoundary - halfW;
     }
 }
 }
@@ -145,21 +158,27 @@ void Physics::update(
     // FACING
     // =========================
 
-    if (match.fighter1().physics.transform.x <
-        match.fighter2().physics.transform.x)
+    Fighter& fighter1 =
+        match.fighter1();
+
+    Fighter& fighter2 =
+        match.fighter2();
+
+    if (fighter1.physics.transform.x <
+        fighter2.physics.transform.x)
     {
-        match.fighter1().facing =
+        fighter1.facing =
             Facing::Right;
 
-        match.fighter2().facing =
+        fighter2.facing =
             Facing::Left;
     }
     else
     {
-        match.fighter1().facing =
+        fighter1.facing =
             Facing::Left;
 
-        match.fighter2().facing =
+        fighter2.facing =
             Facing::Right;
     }
 }

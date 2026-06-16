@@ -17,7 +17,8 @@ Renderer::Renderer(
 }
 
 void Renderer::draw(
-    const Transform& transform) const
+    const Transform& transform,
+    Facing facing) const
 {
     glm::mat4 model(1.0f);
 
@@ -28,10 +29,18 @@ void Renderer::draw(
             transform.y,
             0.0f));
 
+    float scaleX =
+        transform.width;
+
+    if (facing == Facing::Left)
+    {
+        scaleX = -scaleX;
+    }
+
     model = glm::scale(
         model,
         glm::vec3(
-            transform.width,
+            scaleX,
             transform.height,
             1.0f));
 
