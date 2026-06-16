@@ -178,3 +178,18 @@ void Shader::setMat4(
         GL_FALSE,
         glm::value_ptr(matrix));
 }
+
+
+void Shader::setInt(
+    const char* name,
+    int value) const
+{
+    const int location =
+        glGetUniformLocation(
+            id_,
+            name);
+
+    glUniform1i(
+        location,
+        value);
+}

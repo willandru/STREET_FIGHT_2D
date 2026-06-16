@@ -9,11 +9,13 @@
 #include "QuadMesh.h"
 #include "Renderer.h"
 #include "Shader.h"
+#include "Texture.h"
 #include "Window.h"
 #include "CombatSystem.h"
 #include "FighterStateMachine.h"
 
 #include <glad/glad.h>
+
 #include <filesystem>
 
 namespace
@@ -21,22 +23,28 @@ namespace
 constexpr int kWindowWidth = 800;
 constexpr int kWindowHeight = 600;
 
-constexpr char kWindowTitle[] = "Street Fighter 2D";
+constexpr char kWindowTitle[] =
+    "Street Fighter 2D";
 
-constexpr char kVertexShaderPath[] = "triangle.vert";
-constexpr char kFragmentShaderPath[] = "triangle.frag";
-
-std::filesystem::path getExecutableDirectory(char* executablePath)
+std::filesystem::path getExecutableDirectory(
+    char* executablePath)
 {
-    return std::filesystem::absolute(executablePath).parent_path();
+    return std::filesystem::absolute(
+        executablePath).parent_path();
 }
 
 void renderFrame(
     const Renderer& renderer,
     const Match& match)
 {
-    glClearColor(0.08f, 0.10f, 0.12f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClearColor(
+        0.08f,
+        0.10f,
+        0.12f,
+        1.0f);
+
+    glClear(
+        GL_COLOR_BUFFER_BIT);
 
     renderer.draw(
         match.fighter1().physics.transform);
@@ -46,12 +54,16 @@ void renderFrame(
 }
 }
 
-int main(int, char* argv[])
+int main(
+    int,
+    char* argv[])
 {
     GlfwContext glfw;
 
     if (!glfw.isValid())
+    {
         return 1;
+    }
 
     Window window(
         kWindowWidth,
@@ -59,23 +71,45 @@ int main(int, char* argv[])
         kWindowTitle);
 
     if (!window.isValid())
+    {
         return 1;
+    }
 
-    Input::Initialize(window.glfwHandle());
+    Input::Initialize(
+        window.glfwHandle());
 
-    const std::filesystem::path shaderDirectory =
-        getExecutableDirectory(argv[0]);
+    const std::filesystem::path executableDir =
+        getExecutableDirectory(
+            argv[0]);
 
     Shader shader(
-        shaderDirectory / kVertexShaderPath,
-        shaderDirectory / kFragmentShaderPath);
+        executableDir / "triangle.vert",
+        executableDir / "triangle.frag");
+
+    Texture texture(
+        executableDir / "ryu.png");
 
     QuadMesh quad;
 
-    if (!shader.isValid() || !quad.isValid())
+    if (!shader.isValid())
+    {
         return 1;
+    }
 
-    Renderer renderer(shader, quad);
+    if (!texture.isValid())
+    {
+        return 1;
+    }
+
+    if (!quad.isValid())
+    {
+        return 1;
+    }
+
+    Renderer renderer(
+        shader,
+        quad,
+        texture);
 
     Match match;
     Physics physics;
@@ -90,12 +124,11 @@ int main(int, char* argv[])
 
         window.processInput();
 
-        Fighter& fighter1 = match.fighter1();
-        Fighter& fighter2 = match.fighter2();
+        Fighter& fighter1 =
+            match.fighter1();
 
-        // =========================
-        // INPUT -> COMMAND
-        // =========================
+        Fighter& fighter2 =
+            match.fighter2();
 
         FighterCommand cmd1 =
             controller.build(true);
@@ -103,19 +136,11 @@ int main(int, char* argv[])
         FighterCommand cmd2 =
             controller.build(false);
 
-        // =========================
-        // PHYSICS
-        // =========================
-
         physics.update(
             match,
             gameTime.deltaTime(),
             cmd1,
             cmd2);
-
-        // =========================
-        // STATE MACHINE
-        // =========================
 
         stateMachine.update(
             fighter1,
@@ -125,17 +150,9 @@ int main(int, char* argv[])
             fighter2,
             cmd2);
 
-        // =========================
-        // COMBAT
-        // =========================
-
         combat.update(
             match,
             stateMachine);
-
-        // =========================
-        // RENDER
-        // =========================
 
         renderFrame(
             renderer,

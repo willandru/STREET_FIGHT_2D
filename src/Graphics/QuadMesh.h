@@ -1,4 +1,3 @@
-// src/QuadMesh.h
 #pragma once
 
 class QuadMesh
@@ -11,6 +10,7 @@ public:
     QuadMesh& operator=(const QuadMesh&) = delete;
 
     bool isValid() const;
+
     void draw() const;
 
 private:

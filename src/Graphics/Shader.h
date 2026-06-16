@@ -23,6 +23,10 @@ public:
         const char* name,
         const glm::mat4& matrix) const;
 
+    void setInt(
+        const char* name,
+        int value) const;
+
 private:
     unsigned int id_ = 0;
 };

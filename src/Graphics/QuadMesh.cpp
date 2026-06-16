@@ -4,14 +4,14 @@
 
 QuadMesh::QuadMesh()
 {
-    // Rectángulo centrado en el origen
     const float vertices[] =
     {
-        // x      y      z
-        -0.5f, -0.5f, 0.0f, // 0
-         0.5f, -0.5f, 0.0f, // 1
-         0.5f,  0.5f, 0.0f, // 2
-        -0.5f,  0.5f, 0.0f  // 3
+        // x      y      z      u     v
+
+        -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, // 0
+         0.5f, -0.5f, 0.0f,   1.0f, 0.0f, // 1
+         0.5f,  0.5f, 0.0f,   1.0f, 1.0f, // 2
+        -0.5f,  0.5f, 0.0f,   0.0f, 1.0f  // 3
     };
 
     const unsigned int indices[] =
@@ -20,72 +20,129 @@ QuadMesh::QuadMesh()
         2, 3, 0
     };
 
-    glGenVertexArrays(1, &vao_);
-    glGenBuffers(1, &vbo_);
-    glGenBuffers(1, &ebo_);
+    glGenVertexArrays(
+        1,
+        &vao_);
 
-    if (vao_ == 0 || vbo_ == 0 || ebo_ == 0)
+    glGenBuffers(
+        1,
+        &vbo_);
+
+    glGenBuffers(
+        1,
+        &ebo_);
+
+    if (vao_ == 0 ||
+        vbo_ == 0 ||
+        ebo_ == 0)
     {
         return;
     }
 
-    glBindVertexArray(vao_);
+    glBindVertexArray(
+        vao_);
 
-    glBindBuffer(GL_ARRAY_BUFFER, vbo_);
+    glBindBuffer(
+        GL_ARRAY_BUFFER,
+        vbo_);
+
     glBufferData(
         GL_ARRAY_BUFFER,
         sizeof(vertices),
         vertices,
         GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo_);
+    glBindBuffer(
+        GL_ELEMENT_ARRAY_BUFFER,
+        ebo_);
+
     glBufferData(
         GL_ELEMENT_ARRAY_BUFFER,
         sizeof(indices),
         indices,
         GL_STATIC_DRAW);
 
+    constexpr int stride =
+        5 * sizeof(float);
+
+    // =========================
+    // POSITION
+    // =========================
+
     glVertexAttribPointer(
-        0,                  // location
-        3,                  // x,y,z
+        0,
+        3,
         GL_FLOAT,
         GL_FALSE,
-        3 * sizeof(float),
-        nullptr);
+        stride,
+        reinterpret_cast<void*>(0));
 
-    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(
+        0);
 
-    glBindVertexArray(0);
+    // =========================
+    // UV
+    // =========================
+
+    glVertexAttribPointer(
+        1,
+        2,
+        GL_FLOAT,
+        GL_FALSE,
+        stride,
+        reinterpret_cast<void*>(
+            3 * sizeof(float)));
+
+    glEnableVertexAttribArray(
+        1);
+
+    glBindVertexArray(
+        0);
 }
 
 QuadMesh::~QuadMesh()
 {
     if (ebo_ != 0)
     {
-        glDeleteBuffers(1, &ebo_);
+        glDeleteBuffers(
+            1,
+            &ebo_);
     }
 
     if (vbo_ != 0)
     {
-        glDeleteBuffers(1, &vbo_);
+        glDeleteBuffers(
+            1,
+            &vbo_);
     }
 
     if (vao_ != 0)
     {
-        glDeleteVertexArrays(1, &vao_);
+        glDeleteVertexArrays(
+            1,
+            &vao_);
     }
 }
 
 bool QuadMesh::isValid() const
 {
-    return vao_ != 0 &&
-           vbo_ != 0 &&
-           ebo_ != 0;
+    return
+        vao_ != 0 &&
+        vbo_ != 0 &&
+        ebo_ != 0;
 }
 
 void QuadMesh::draw() const
 {
-    glBindVertexArray(vao_);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
-    glBindVertexArray(0);
+    glBindVertexArray(
+        vao_);
+
+    glDrawElements(
+        GL_TRIANGLES,
+        6,
+        GL_UNSIGNED_INT,
+        nullptr);
+
+    glBindVertexArray(
+        0);
 }

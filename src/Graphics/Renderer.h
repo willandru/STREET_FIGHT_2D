@@ -2,6 +2,7 @@
 
 #include "QuadMesh.h"
 #include "Shader.h"
+#include "Texture.h"
 #include "Transform.h"
 
 class Renderer
@@ -9,7 +10,8 @@ class Renderer
 public:
     Renderer(
         const Shader& shader,
-        const QuadMesh& quad);
+        const QuadMesh& quad,
+        const Texture& texture);
 
     void draw(
         const Transform& transform) const;
@@ -17,4 +19,5 @@ public:
 private:
     const Shader& shader_;
     const QuadMesh& quad_;
+    const Texture& texture_;
 };

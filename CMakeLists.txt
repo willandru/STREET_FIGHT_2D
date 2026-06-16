@@ -40,6 +40,8 @@ add_executable(StreetFight2D
     src/Graphics/Renderer.cpp
     src/Graphics/QuadMesh.cpp
     src/Graphics/TriangleMesh.cpp
+    src/Graphics/Texture.cpp
+    src/Graphics/StbImage.cpp
 
     # Core
     src/Core/GameTime.cpp
@@ -58,7 +60,7 @@ add_executable(StreetFight2D
 )
 
 # =========================================================
-# INCLUDE DIRS
+# INCLUDE DIRECTORIES
 # =========================================================
 
 target_include_directories(
@@ -67,7 +69,6 @@ target_include_directories(
     src
 
     src/Core
-    src/Data
     src/Fighter
     src/Graphics
     src/Platform
@@ -76,6 +77,7 @@ target_include_directories(
     externals/glad/include
     externals/glfw-3.4/include
     externals/glm
+    externals/stb
 )
 
 # =========================================================
@@ -88,7 +90,7 @@ target_compile_definitions(
 )
 
 # =========================================================
-# LINK
+# LINK LIBRARIES
 # =========================================================
 
 target_link_libraries(
@@ -98,15 +100,31 @@ target_link_libraries(
     opengl32
 )
 
+
 # =========================================================
-# COPY SHADERS
+# COPY ASSETS
 # =========================================================
 
 add_custom_command(
     TARGET StreetFight2D POST_BUILD
 
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${CMAKE_SOURCE_DIR}/src/Assets/triangle.vert
-        ${CMAKE_SOURCE_DIR}/src/Assets/triangle.frag
-        $<TARGET_FILE_DIR:StreetFight2D>
+        ${CMAKE_SOURCE_DIR}/src/Assets/Shaders/triangle.vert
+        $<TARGET_FILE_DIR:StreetFight2D>/triangle.vert
+)
+
+add_custom_command(
+    TARGET StreetFight2D POST_BUILD
+
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${CMAKE_SOURCE_DIR}/src/Assets/Shaders/triangle.frag
+        $<TARGET_FILE_DIR:StreetFight2D>/triangle.frag
+)
+
+add_custom_command(
+    TARGET StreetFight2D POST_BUILD
+
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${CMAKE_SOURCE_DIR}/src/Assets/Textures/ryu.png
+        $<TARGET_FILE_DIR:StreetFight2D>/ryu.png
 )
