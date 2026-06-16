@@ -8,11 +8,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # =========================================================
 # GLFW
 # =========================================================
+
 add_subdirectory(externals/glfw-3.4)
 
 # =========================================================
 # GLAD
 # =========================================================
+
 add_library(glad
     externals/glad/src/glad.c
 )
@@ -24,44 +26,61 @@ target_include_directories(glad PUBLIC
 # =========================================================
 # EXECUTABLE
 # =========================================================
+
 add_executable(StreetFight2D
+
     main.cpp
 
-    src/GlfwContext.cpp
-    src/Window.cpp
+    # Platform
+    src/Platform/GlfwContext.cpp
+    src/Platform/Window.cpp
 
-    src/Shader.cpp
-    src/QuadMesh.cpp
-    src/Renderer.cpp
+    # Graphics
+    src/Graphics/Shader.cpp
+    src/Graphics/Renderer.cpp
+    src/Graphics/QuadMesh.cpp
+    src/Graphics/TriangleMesh.cpp
 
-    src/Fighter.cpp
-    src/FighterStateMachine.cpp
+    # Core
+    src/Core/GameTime.cpp
+    src/Core/Input.cpp
+    src/Core/Match.cpp
+    src/Core/Stage.cpp
 
+    # Fighter
+    src/Fighter/Fighter.cpp
+    src/Fighter/FighterController.cpp
 
-    src/Match.cpp
-
-    src/Physics.cpp
-    src/GameTime.cpp
-
-    src/Input.cpp
-    src/FighterController.cpp
-    src/CombatSystem.cpp
-
-    src/Stage.cpp
-
+    # Systems
+    src/Systems/Physics.cpp
+    src/Systems/CombatSystem.cpp
+    src/Systems/FighterStateMachine.cpp
 )
 
 # =========================================================
 # INCLUDE DIRS
 # =========================================================
-target_include_directories(StreetFight2D PRIVATE
+
+target_include_directories(
+    StreetFight2D PRIVATE
+
     src
+
+    src/Core
+    src/Data
+    src/Fighter
+    src/Graphics
+    src/Platform
+    src/Systems
 
     externals/glad/include
     externals/glfw-3.4/include
-
     externals/glm
 )
+
+# =========================================================
+# DEFINITIONS
+# =========================================================
 
 target_compile_definitions(
     StreetFight2D PRIVATE
@@ -71,6 +90,7 @@ target_compile_definitions(
 # =========================================================
 # LINK
 # =========================================================
+
 target_link_libraries(
     StreetFight2D PRIVATE
     glfw
@@ -81,11 +101,12 @@ target_link_libraries(
 # =========================================================
 # COPY SHADERS
 # =========================================================
+
 add_custom_command(
     TARGET StreetFight2D POST_BUILD
 
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${CMAKE_SOURCE_DIR}/triangle.vert
-        ${CMAKE_SOURCE_DIR}/triangle.frag
+        ${CMAKE_SOURCE_DIR}/src/Assets/triangle.vert
+        ${CMAKE_SOURCE_DIR}/src/Assets/triangle.frag
         $<TARGET_FILE_DIR:StreetFight2D>
 )
