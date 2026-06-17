@@ -52,11 +52,13 @@ add_executable(StreetFight2D
     # Fighter
     src/Fighter/Fighter.cpp
     src/Fighter/FighterController.cpp
+    src/Fighter/CharacterPresets.cpp
 
     # Systems
     src/Systems/Physics.cpp
     src/Systems/CombatSystem.cpp
     src/Systems/FighterStateMachine.cpp
+    
 )
 
 # =========================================================

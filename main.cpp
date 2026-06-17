@@ -14,6 +14,7 @@
 #include "Window.h"
 #include "CombatSystem.h"
 #include "FighterStateMachine.h"
+#include "CharacterPresets.h"
 
 #include <glad/glad.h>
 
@@ -119,27 +120,9 @@ int main(
         return 1;
     }
 
-    CharacterData ryu;
+    CharacterData ryu = Characters::createRyu(ryuTexture);
 
-    ryu.idleTexture =
-        &ryuTexture;
-
-    ryu.moveSpeed =
-        3.0f;
-
-    ryu.jumpSpeed =
-        6.5f;
-
-    CharacterData ken;
-
-    ken.idleTexture =
-        &kenTexture;
-
-    ken.moveSpeed =
-        3.2f;
-
-    ken.jumpSpeed =
-        7.0f;
+    CharacterData ken = Characters::createKen(kenTexture);
 
     Renderer renderer(
         shader,
