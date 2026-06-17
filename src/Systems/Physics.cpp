@@ -5,131 +5,94 @@
 #include "Stage.h"
 #include "Transform.h"
 #include "CharacterData.h"
+#include "Match.h"
+#include "FighterCommand.h"
 
 namespace
 {
 void updateFighter(
     Fighter& fighter,
     const FighterCommand& cmd,
-    float deltaTime,
+    float dt,
     float gravity,
     float groundY,
     float leftBoundary,
     float rightBoundary)
 {
-    Transform& t =
-        fighter.physics.transform;
+    Transform& t = fighter.physics.transform;
 
-    // =========================
-    // INPUT DE MOVIMIENTO
-    // =========================
-
-    fighter.crouching =
-        cmd.crouch;
-
-    fighter.physics.velocityX =
-        0.0f;
-
-    if (fighter.character == nullptr)
-    {
+    if (!fighter.character)
         return;
-    }
 
-    if (cmd.moveLeft)
-    {
-        fighter.physics.velocityX =
-            -fighter.character->moveSpeed;
-    }
+    fighter.crouching = cmd.crouch;
 
-    if (cmd.moveRight)
-    {
-        fighter.physics.velocityX =
-            fighter.character->moveSpeed;
-    }
+    // =====================================================
+    // INPUT RAW (SIN FACING)
+    // =====================================================
+    float input = 0.0f;
 
-    // =========================
+    if (cmd.moveLeft)  input -= 1.0f;
+    if (cmd.moveRight) input += 1.0f;
+
+    // =====================================================
+    // MOVIMIENTO DIRECTO (FIX CRÍTICO)
+    // =====================================================
+    fighter.physics.velocityX =
+        input * fighter.character->moveSpeed;
+
+    // =====================================================
     // SALTO
-    // =========================
-
-    const bool wasGrounded =
-        fighter.physics.grounded;
-
-    if (cmd.jump && wasGrounded)
+    // =====================================================
+    if (cmd.jump && fighter.physics.grounded)
     {
         fighter.physics.velocityY =
             fighter.character->jumpSpeed;
     }
 
-    // =========================
+    // =====================================================
     // GRAVEDAD
-    // =========================
+    // =====================================================
+    fighter.physics.velocityY += gravity * dt;
 
-    fighter.physics.velocityY +=
-        gravity * deltaTime;
-
-    // =========================
+    // =====================================================
     // INTEGRACIÓN
-    // =========================
+    // =====================================================
+    t.x += fighter.physics.velocityX * dt;
+    t.y += fighter.physics.velocityY * dt;
 
-    t.x +=
-        fighter.physics.velocityX *
-        deltaTime;
-
-    t.y +=
-        fighter.physics.velocityY *
-        deltaTime;
-
-    // =========================
-    // COLISIÓN CON SUELO
-    // =========================
-
-    const float halfH =
-        t.height * 0.5f;
-
-    const float bottom =
-        t.y - halfH;
+    // =====================================================
+    // COLISIÓN SUELO
+    // =====================================================
+    const float halfH = t.height * 0.5f;
+    const float bottom = t.y - halfH;
 
     if (bottom <= groundY)
     {
-        t.y =
-            groundY + halfH;
-
-        fighter.physics.velocityY =
-            0.0f;
-
-        fighter.physics.grounded =
-            true;
+        t.y = groundY + halfH;
+        fighter.physics.velocityY = 0.0f;
+        fighter.physics.grounded = true;
     }
     else
     {
-        fighter.physics.grounded =
-            false;
+        fighter.physics.grounded = false;
     }
 
-    // =========================
-    // LÍMITES DEL STAGE
-    // =========================
-
-    const float halfW =
-        t.width * 0.5f;
+    // =====================================================
+    // LÍMITES STAGE
+    // =====================================================
+    const float halfW = t.width * 0.5f;
 
     if (t.x - halfW < leftBoundary)
-    {
-        t.x =
-            leftBoundary + halfW;
-    }
+        t.x = leftBoundary + halfW;
 
     if (t.x + halfW > rightBoundary)
-    {
-        t.x =
-            rightBoundary - halfW;
-    }
+        t.x = rightBoundary - halfW;
 }
 }
 
 void Physics::update(
     Match& match,
-    float deltaTime,
+    float dt,
     const FighterCommand& p1,
     const FighterCommand& p2)
 {
@@ -142,49 +105,23 @@ void Physics::update(
     const float rightBoundary =
         match.stage().rightBoundary();
 
-    updateFighter(
-        match.fighter1(),
-        p1,
-        deltaTime,
-        kGravity,
-        groundY,
-        leftBoundary,
-        rightBoundary);
+    updateFighter(match.fighter1(), p1, dt, kGravity, groundY, leftBoundary, rightBoundary);
+    updateFighter(match.fighter2(), p2, dt, kGravity, groundY, leftBoundary, rightBoundary);
 
-    updateFighter(
-        match.fighter2(),
-        p2,
-        deltaTime,
-        kGravity,
-        groundY,
-        leftBoundary,
-        rightBoundary);
+    // =====================================================
+    // FACING AUTOMÁTICO (SOLO VISUAL / ANIMACIÓN)
+    // =====================================================
+    Fighter& a = match.fighter1();
+    Fighter& b = match.fighter2();
 
-    // =========================
-    // FACING
-    // =========================
-
-    Fighter& fighter1 =
-        match.fighter1();
-
-    Fighter& fighter2 =
-        match.fighter2();
-
-    if (fighter1.physics.transform.x <
-        fighter2.physics.transform.x)
+    if (a.physics.transform.x < b.physics.transform.x)
     {
-        fighter1.facing =
-            Facing::Right;
-
-        fighter2.facing =
-            Facing::Left;
+        a.facing = Facing::Right;
+        b.facing = Facing::Left;
     }
     else
     {
-        fighter1.facing =
-            Facing::Left;
-
-        fighter2.facing =
-            Facing::Right;
+        a.facing = Facing::Left;
+        b.facing = Facing::Right;
     }
 }

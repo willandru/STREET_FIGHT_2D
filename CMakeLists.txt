@@ -75,11 +75,10 @@ target_link_libraries(StreetFight2D PRIVATE glfw glad opengl32)
 add_custom_command(
     TARGET StreetFight2D POST_BUILD
 
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${CMAKE_SOURCE_DIR}/src/Assets/Shaders/triangle.vert
-        $<TARGET_FILE_DIR:StreetFight2D>/triangle.vert
+    COMMAND ${CMAKE_COMMAND} -E make_directory
+        $<TARGET_FILE_DIR:StreetFight2D>/Assets
 
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${CMAKE_SOURCE_DIR}/src/Assets/Shaders/triangle.frag
-        $<TARGET_FILE_DIR:StreetFight2D>/triangle.frag
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/src/Assets
+        $<TARGET_FILE_DIR:StreetFight2D>/Assets
 )

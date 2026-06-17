@@ -6,9 +6,12 @@ struct FighterAnimationData
 {
     Animation idle;
 
-    Animation walk;
+    Animation walkForward;
+    Animation walkBackward;
+
     Animation jump;
     Animation crouch;
+
     Animation lightAttack;
     Animation heavyAttack;
 };

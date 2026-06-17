@@ -10,13 +10,7 @@ void AnimationSystem::update(
     float deltaTime)
 {
     if (!fighter.character)
-    {
         return;
-    }
-
-    // =========================
-    // 1. SELECT ANIMATION FROM STATE
-    // =========================
 
     const Animation* targetAnimation = nullptr;
 
@@ -27,9 +21,14 @@ void AnimationSystem::update(
                 &fighter.character->animations.idle;
             break;
 
-        case FighterState::Walking:
+        case FighterState::WalkingForward:
             targetAnimation =
-                &fighter.character->animations.walk;
+                &fighter.character->animations.walkForward;
+            break;
+
+        case FighterState::WalkingBackward:
+            targetAnimation =
+                &fighter.character->animations.walkBackward;
             break;
 
         case FighterState::Jumping:
@@ -59,9 +58,8 @@ void AnimationSystem::update(
     }
 
     // =========================
-    // 2. SWITCH ANIMATION IF NEEDED
+    // SWITCH ANIMATION
     // =========================
-
     if (fighter.currentAnimation != targetAnimation)
     {
         fighter.currentAnimation = targetAnimation;
@@ -71,19 +69,10 @@ void AnimationSystem::update(
 
     if (!fighter.currentAnimation ||
         fighter.currentAnimation->frames.empty())
-    {
         return;
-    }
 
-    // safety clamp (IMPORTANT FIX)
     if (fighter.currentFrame >= (int)fighter.currentAnimation->frames.size())
-    {
         fighter.currentFrame = 0;
-    }
-
-    // =========================
-    // 3. FRAME TIMING
-    // =========================
 
     fighter.animationTimer += deltaTime;
 
@@ -91,24 +80,17 @@ void AnimationSystem::update(
         fighter.currentAnimation->frames[fighter.currentFrame];
 
     if (fighter.animationTimer < frame.duration)
-    {
         return;
-    }
 
     fighter.animationTimer = 0.0f;
     fighter.currentFrame++;
 
-    if (fighter.currentFrame >=
-        (int)fighter.currentAnimation->frames.size())
+    if (fighter.currentFrame >= (int)fighter.currentAnimation->frames.size())
     {
         if (fighter.currentAnimation->loop)
-        {
             fighter.currentFrame = 0;
-        }
         else
-        {
             fighter.currentFrame =
                 (int)fighter.currentAnimation->frames.size() - 1;
-        }
     }
 }
