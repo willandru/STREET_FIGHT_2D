@@ -22,18 +22,15 @@ public:
     CharacterData* character = nullptr;
 
     Facing facing = Facing::Right;
-
     FighterState state = FighterState::Idle;
 
     bool crouching = false;
 
     // =========================
-    // ANIMATION
+    // ANIMATION STATE (NEEDED)
     // =========================
 
     const Animation* currentAnimation = nullptr;
-
     int currentFrame = 0;
-
     float animationTimer = 0.0f;
 };

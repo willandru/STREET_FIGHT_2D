@@ -24,7 +24,6 @@ namespace
 {
 constexpr int kWindowWidth = 800;
 constexpr int kWindowHeight = 600;
-
 constexpr char kWindowTitle[] = "Street Fighter 2D";
 
 std::filesystem::path getExecutableDirectory(char* executablePath)
@@ -40,17 +39,12 @@ void renderFrame(const Renderer& renderer, const Match& match)
     auto drawFighter = [&](const Fighter& f)
     {
         const Animation* anim = f.currentAnimation;
-        if (!anim || anim->frames.empty())
-            return;
+        if (!anim || anim->frames.empty()) return;
 
         const Texture* tex = anim->frames[f.currentFrame].texture;
-        if (!tex)
-            return;
+        if (!tex) return;
 
-        renderer.draw(
-            f.physics.transform,
-            f.facing,
-            *tex);
+        renderer.draw(f.physics.transform, f.facing, *tex);
     };
 
     drawFighter(match.fighter1());
@@ -68,27 +62,22 @@ int main(int, char* argv[])
 
     Input::Initialize(window.glfwHandle());
 
-    const std::filesystem::path executableDir =
-        getExecutableDirectory(argv[0]);
+    const auto executableDir = getExecutableDirectory(argv[0]);
 
     Shader shader(
         executableDir / "triangle.vert",
-        executableDir / "triangle.frag");
+        executableDir / "triangle.frag"
+    );
 
     QuadMesh quad;
+    if (!shader.isValid() || !quad.isValid()) return 1;
 
-    if (!shader.isValid() || !quad.isValid())
-        return 1;
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-    // =========================
-    // ASSET SYSTEM (CORRECT)
-    // =========================
     AssetManager assets;
     assets.loadAll((executableDir / "Assets/Textures").string());
 
-    // =========================
-    // CHARACTERS (DATA DRIVEN)
-    // =========================
     CharacterData ryu = Characters::createRyu(assets);
     CharacterData ken = Characters::createKen(assets);
 
@@ -110,19 +99,22 @@ int main(int, char* argv[])
         gameTime.update();
         window.processInput();
 
+        float dt = gameTime.deltaTime();
+        if (dt > 0.033f) dt = 0.033f;
+
         Fighter& f1 = match.fighter1();
         Fighter& f2 = match.fighter2();
 
         FighterCommand c1 = controller.build(true);
         FighterCommand c2 = controller.build(false);
 
-        physics.update(match, gameTime.deltaTime(), c1, c2);
+        physics.update(match, dt, c1, c2);
 
         stateMachine.update(f1, c1);
         stateMachine.update(f2, c2);
 
-        animationSystem.update(f1, gameTime.deltaTime());
-        animationSystem.update(f2, gameTime.deltaTime());
+        animationSystem.update(f1, dt);
+        animationSystem.update(f2, dt);
 
         combat.update(match, stateMachine);
 

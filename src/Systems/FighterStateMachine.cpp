@@ -5,15 +5,13 @@ void FighterStateMachine::update(
     const FighterCommand& cmd)
 {
     // =========================
-    // CROUCH INPUT
+    // INPUT STATE (CROUCH)
     // =========================
-
     fighter.crouching = cmd.crouch;
 
     // =========================
-    // ATTACKS
+    // ATTACKS (HIGHEST PRIORITY)
     // =========================
-
     if (cmd.lightAttack)
     {
         fighter.state = FighterState::LightAttack;
@@ -29,7 +27,6 @@ void FighterStateMachine::update(
     // =========================
     // AIRBORNE
     // =========================
-
     if (!fighter.physics.grounded)
     {
         fighter.state = FighterState::Jumping;
@@ -39,7 +36,6 @@ void FighterStateMachine::update(
     // =========================
     // CROUCHING
     // =========================
-
     if (fighter.crouching)
     {
         fighter.state = FighterState::Crouching;
@@ -49,7 +45,6 @@ void FighterStateMachine::update(
     // =========================
     // WALKING
     // =========================
-
     if (fighter.physics.velocityX != 0.0f)
     {
         fighter.state = FighterState::Walking;
@@ -57,9 +52,8 @@ void FighterStateMachine::update(
     }
 
     // =========================
-    // DEFAULT
+    // IDLE DEFAULT
     // =========================
-
     fighter.state = FighterState::Idle;
 }
 

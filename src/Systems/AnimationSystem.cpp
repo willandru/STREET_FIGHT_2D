@@ -29,27 +29,27 @@ void AnimationSystem::update(
 
         case FighterState::Walking:
             targetAnimation =
-                &fighter.character->animations.idle;
+                &fighter.character->animations.walk;
             break;
 
         case FighterState::Jumping:
             targetAnimation =
-                &fighter.character->animations.idle;
+                &fighter.character->animations.jump;
             break;
 
         case FighterState::Crouching:
             targetAnimation =
-                &fighter.character->animations.idle;
+                &fighter.character->animations.crouch;
             break;
 
         case FighterState::LightAttack:
             targetAnimation =
-                &fighter.character->animations.idle;
+                &fighter.character->animations.lightAttack;
             break;
 
         case FighterState::HeavyAttack:
             targetAnimation =
-                &fighter.character->animations.idle;
+                &fighter.character->animations.heavyAttack;
             break;
 
         default:
@@ -73,6 +73,12 @@ void AnimationSystem::update(
         fighter.currentAnimation->frames.empty())
     {
         return;
+    }
+
+    // safety clamp (IMPORTANT FIX)
+    if (fighter.currentFrame >= (int)fighter.currentAnimation->frames.size())
+    {
+        fighter.currentFrame = 0;
     }
 
     // =========================

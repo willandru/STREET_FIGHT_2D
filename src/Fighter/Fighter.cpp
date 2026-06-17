@@ -29,14 +29,9 @@ Fighter::Fighter()
 
     state = FighterState::Idle;
 
-    // =========================
-    // ANIMATION
-    // =========================
-
+    // animation init
     currentAnimation = nullptr;
-
     currentFrame = 0;
-
     animationTimer = 0.0f;
 }
 
