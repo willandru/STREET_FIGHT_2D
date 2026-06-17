@@ -100,31 +100,15 @@ target_link_libraries(
     opengl32
 )
 
-
 # =========================================================
 # COPY ASSETS
 # =========================================================
 
 add_custom_command(
-    TARGET StreetFight2D POST_BUILD
+    TARGET StreetFight2D
+    POST_BUILD
 
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${CMAKE_SOURCE_DIR}/src/Assets/Shaders/triangle.vert
-        $<TARGET_FILE_DIR:StreetFight2D>/triangle.vert
-)
-
-add_custom_command(
-    TARGET StreetFight2D POST_BUILD
-
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${CMAKE_SOURCE_DIR}/src/Assets/Shaders/triangle.frag
-        $<TARGET_FILE_DIR:StreetFight2D>/triangle.frag
-)
-
-add_custom_command(
-    TARGET StreetFight2D POST_BUILD
-
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${CMAKE_SOURCE_DIR}/src/Assets/Textures/ryu.png
-        $<TARGET_FILE_DIR:StreetFight2D>/ryu.png
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/src/Assets
+        $<TARGET_FILE_DIR:StreetFight2D>/Assets
 )

@@ -3,9 +3,17 @@
 #include <glad/glad.h>
 #include <stb_image.h>
 
+#include <iostream>
+
 Texture::Texture(
     const std::filesystem::path& path)
 {
+    std::cout
+        << "\n=====================================\n"
+        << "LOADING TEXTURE\n"
+        << path.string()
+        << '\n';
+
     stbi_set_flip_vertically_on_load(true);
 
     int channels = 0;
@@ -20,20 +28,73 @@ Texture::Texture(
 
     if (!data)
     {
+        std::cout
+            << "stbi_load FAILED\n";
+
+        const char* reason =
+            stbi_failure_reason();
+
+        if (reason)
+        {
+            std::cout
+                << "Reason: "
+                << reason
+                << '\n';
+        }
+
         return;
     }
 
-    glGenTextures(1, &id_);
+    std::cout
+        << "stbi_load OK\n"
+        << "Width: "
+        << width_
+        << '\n'
+        << "Height: "
+        << height_
+        << '\n'
+        << "Channels: "
+        << channels
+        << '\n';
+
+    glGenTextures(
+        1,
+        &id_);
+
+    std::cout
+        << "Texture ID: "
+        << id_
+        << '\n';
 
     if (id_ == 0)
     {
+        std::cout
+            << "glGenTextures FAILED\n";
+
         stbi_image_free(data);
+
         return;
     }
 
     glBindTexture(
         GL_TEXTURE_2D,
         id_);
+
+    GLenum error =
+        glGetError();
+
+    if (error != GL_NO_ERROR)
+    {
+        std::cout
+            << "glBindTexture ERROR: "
+            << error
+            << '\n';
+    }
+    else
+    {
+        std::cout
+            << "glBindTexture OK\n";
+    }
 
     glTexParameteri(
         GL_TEXTURE_2D,
@@ -66,14 +127,51 @@ Texture::Texture(
         GL_UNSIGNED_BYTE,
         data);
 
+    error =
+        glGetError();
+
+    if (error != GL_NO_ERROR)
+    {
+        std::cout
+            << "glTexImage2D FAILED\n"
+            << "OpenGL Error: "
+            << error
+            << '\n';
+    }
+    else
+    {
+        std::cout
+            << "glTexImage2D OK\n";
+    }
+
     glGenerateMipmap(
         GL_TEXTURE_2D);
+
+    error =
+        glGetError();
+
+    if (error != GL_NO_ERROR)
+    {
+        std::cout
+            << "glGenerateMipmap FAILED\n"
+            << "OpenGL Error: "
+            << error
+            << '\n';
+    }
+    else
+    {
+        std::cout
+            << "glGenerateMipmap OK\n";
+    }
 
     glBindTexture(
         GL_TEXTURE_2D,
         0);
 
     stbi_image_free(data);
+
+    std::cout
+        << "TEXTURE LOADED SUCCESSFULLY\n";
 }
 
 Texture::~Texture()

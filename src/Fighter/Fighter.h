@@ -3,6 +3,7 @@
 #include "FighterPhysicsData.h"
 #include "FighterCombatData.h"
 
+#include "CharacterData.h"
 #include "Facing.h"
 #include "FighterState.h"
 
@@ -15,6 +16,8 @@ public:
 
     FighterPhysicsData physics;
     FighterCombatData combat;
+
+    CharacterData* character = nullptr;
 
     Facing facing = Facing::Right;
 

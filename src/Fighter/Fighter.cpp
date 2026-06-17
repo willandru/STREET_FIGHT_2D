@@ -21,6 +21,8 @@ Fighter::Fighter()
 
     physics.grounded = false;
 
+    character = nullptr;
+
     crouching = false;
 
     facing = Facing::Right;

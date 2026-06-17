@@ -11,15 +11,14 @@ class Renderer
 public:
     Renderer(
         const Shader& shader,
-        const QuadMesh& quad,
-        const Texture& texture);
+        const QuadMesh& quad);
 
     void draw(
         const Transform& transform,
-        Facing facing) const;
+        Facing facing,
+        const Texture& texture) const;
 
 private:
     const Shader& shader_;
     const QuadMesh& quad_;
-    const Texture& texture_;
 };

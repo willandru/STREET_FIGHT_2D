@@ -7,18 +7,17 @@
 
 Renderer::Renderer(
     const Shader& shader,
-    const QuadMesh& quad,
-    const Texture& texture)
+    const QuadMesh& quad)
     :
     shader_(shader),
-    quad_(quad),
-    texture_(texture)
+    quad_(quad)
 {
 }
 
 void Renderer::draw(
     const Transform& transform,
-    Facing facing) const
+    Facing facing,
+    const Texture& texture) const
 {
     glm::mat4 model(1.0f);
 
@@ -53,7 +52,7 @@ void Renderer::draw(
     glActiveTexture(
         GL_TEXTURE0);
 
-    texture_.bind();
+    texture.bind();
 
     shader_.setInt(
         "texture0",

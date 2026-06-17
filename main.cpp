@@ -6,6 +6,7 @@
 #include "Fighter.h"
 #include "FighterController.h"
 #include "FighterCommand.h"
+#include "CharacterData.h"
 #include "QuadMesh.h"
 #include "Renderer.h"
 #include "Shader.h"
@@ -17,6 +18,7 @@
 #include <glad/glad.h>
 
 #include <filesystem>
+#include <iostream>
 
 namespace
 {
@@ -48,11 +50,13 @@ void renderFrame(
 
     renderer.draw(
         match.fighter1().physics.transform,
-        match.fighter1().facing);
+        match.fighter1().facing,
+        *match.fighter1().character->idleTexture);
 
     renderer.draw(
         match.fighter2().physics.transform,
-        match.fighter2().facing);
+        match.fighter2().facing,
+        *match.fighter2().character->idleTexture);
 }
 }
 
@@ -60,12 +64,17 @@ int main(
     int,
     char* argv[])
 {
+    std::cout << "PROGRAM START\n";
+
     GlfwContext glfw;
 
     if (!glfw.isValid())
     {
+        std::cout << "GLFW FAILED\n";
         return 1;
     }
+
+    std::cout << "GLFW OK\n";
 
     Window window(
         kWindowWidth,
@@ -74,8 +83,11 @@ int main(
 
     if (!window.isValid())
     {
+        std::cout << "WINDOW FAILED\n";
         return 1;
     }
+
+    std::cout << "WINDOW OK\n";
 
     Input::Initialize(
         window.glfwHandle());
@@ -84,41 +96,82 @@ int main(
         getExecutableDirectory(
             argv[0]);
 
+    std::cout
+        << "Executable directory:\n"
+        << executableDir
+        << "\n\n";
+
     Shader shader(
         executableDir / "triangle.vert",
         executableDir / "triangle.frag");
 
-    Texture texture(
-        executableDir / "ryu.png");
+    Texture ryuTexture(
+    executableDir / "Assets/Textures/ryu.png");
+
+    Texture kenTexture(
+    executableDir / "Assets/Textures/rye2.png");
 
     QuadMesh quad;
 
     if (!shader.isValid())
     {
+        std::cout << "SHADER FAILED\n";
         return 1;
     }
 
-    if (!texture.isValid())
+    std::cout << "SHADER OK\n";
+
+    if (!ryuTexture.isValid())
     {
+        std::cout << "RYU TEXTURE FAILED\n";
         return 1;
     }
+
+    std::cout << "RYU TEXTURE OK\n";
+
+    if (!kenTexture.isValid())
+    {
+        std::cout << "KEN TEXTURE FAILED\n";
+        return 1;
+    }
+
+    std::cout << "KEN TEXTURE OK\n";
 
     if (!quad.isValid())
     {
+        std::cout << "QUAD FAILED\n";
         return 1;
     }
 
+    std::cout << "QUAD OK\n";
+
+    CharacterData ryu;
+    ryu.idleTexture =
+        &ryuTexture;
+
+    CharacterData ken;
+    ken.idleTexture =
+        &kenTexture;
+
     Renderer renderer(
         shader,
-        quad,
-        texture);
+        quad);
 
     Match match;
+
+    match.fighter1().character =
+        &ryu;
+
+    match.fighter2().character =
+        &ken;
+
     Physics physics;
     CombatSystem combat;
     FighterStateMachine stateMachine;
     GameTime gameTime;
     FighterController controller;
+
+    std::cout << "ENTERING GAME LOOP\n";
 
     while (!window.shouldClose())
     {
