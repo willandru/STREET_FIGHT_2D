@@ -4,6 +4,7 @@
 #include "Fighter.h"
 #include "Stage.h"
 #include "Transform.h"
+#include "CharacterData.h"
 
 namespace
 {
@@ -29,16 +30,21 @@ void updateFighter(
     fighter.physics.velocityX =
         0.0f;
 
+    if (fighter.character == nullptr)
+    {
+        return;
+    }
+
     if (cmd.moveLeft)
     {
         fighter.physics.velocityX =
-            -Fighter::MoveSpeed;
+            -fighter.character->moveSpeed;
     }
 
     if (cmd.moveRight)
     {
         fighter.physics.velocityX =
-            Fighter::MoveSpeed;
+            fighter.character->moveSpeed;
     }
 
     // =========================
@@ -51,7 +57,7 @@ void updateFighter(
     if (cmd.jump && wasGrounded)
     {
         fighter.physics.velocityY =
-            Fighter::JumpSpeed;
+            fighter.character->jumpSpeed;
     }
 
     // =========================

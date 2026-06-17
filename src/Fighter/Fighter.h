@@ -24,7 +24,4 @@ public:
     FighterState state = FighterState::Idle;
 
     bool crouching = false;
-
-    static constexpr float MoveSpeed = 3.0f;
-    static constexpr float JumpSpeed = 6.5f;
 };

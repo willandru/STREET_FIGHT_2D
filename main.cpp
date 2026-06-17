@@ -18,7 +18,6 @@
 #include <glad/glad.h>
 
 #include <filesystem>
-#include <iostream>
 
 namespace
 {
@@ -64,17 +63,12 @@ int main(
     int,
     char* argv[])
 {
-    std::cout << "PROGRAM START\n";
-
     GlfwContext glfw;
 
     if (!glfw.isValid())
     {
-        std::cout << "GLFW FAILED\n";
         return 1;
     }
-
-    std::cout << "GLFW OK\n";
 
     Window window(
         kWindowWidth,
@@ -83,11 +77,8 @@ int main(
 
     if (!window.isValid())
     {
-        std::cout << "WINDOW FAILED\n";
         return 1;
     }
-
-    std::cout << "WINDOW OK\n";
 
     Input::Initialize(
         window.glfwHandle());
@@ -96,62 +87,59 @@ int main(
         getExecutableDirectory(
             argv[0]);
 
-    std::cout
-        << "Executable directory:\n"
-        << executableDir
-        << "\n\n";
-
     Shader shader(
         executableDir / "triangle.vert",
         executableDir / "triangle.frag");
 
     Texture ryuTexture(
-    executableDir / "Assets/Textures/ryu.png");
+        executableDir / "Assets/Textures/ryu.png");
 
     Texture kenTexture(
-    executableDir / "Assets/Textures/rye2.png");
+        executableDir / "Assets/Textures/rye2.png");
 
     QuadMesh quad;
 
     if (!shader.isValid())
     {
-        std::cout << "SHADER FAILED\n";
         return 1;
     }
-
-    std::cout << "SHADER OK\n";
 
     if (!ryuTexture.isValid())
     {
-        std::cout << "RYU TEXTURE FAILED\n";
         return 1;
     }
-
-    std::cout << "RYU TEXTURE OK\n";
 
     if (!kenTexture.isValid())
     {
-        std::cout << "KEN TEXTURE FAILED\n";
         return 1;
     }
-
-    std::cout << "KEN TEXTURE OK\n";
 
     if (!quad.isValid())
     {
-        std::cout << "QUAD FAILED\n";
         return 1;
     }
 
-    std::cout << "QUAD OK\n";
-
     CharacterData ryu;
+
     ryu.idleTexture =
         &ryuTexture;
 
+    ryu.moveSpeed =
+        3.0f;
+
+    ryu.jumpSpeed =
+        6.5f;
+
     CharacterData ken;
+
     ken.idleTexture =
         &kenTexture;
+
+    ken.moveSpeed =
+        3.2f;
+
+    ken.jumpSpeed =
+        7.0f;
 
     Renderer renderer(
         shader,
@@ -170,8 +158,6 @@ int main(
     FighterStateMachine stateMachine;
     GameTime gameTime;
     FighterController controller;
-
-    std::cout << "ENTERING GAME LOOP\n";
 
     while (!window.shouldClose())
     {
