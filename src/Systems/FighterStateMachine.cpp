@@ -8,14 +8,11 @@ void FighterStateMachine::update(
     Fighter& fighter,
     const FighterCommand& cmd)
 {
-    // =========================
-    // INPUT STATE (CROUCH)
-    // =========================
     fighter.crouching = cmd.crouch;
 
-    // =========================
-    // ATTACKS (HIGHEST PRIORITY)
-    // =========================
+    // =====================================================
+    // ATTACK PRIORITY
+    // =====================================================
     if (cmd.lightAttack)
     {
         fighter.state = FighterState::LightAttack;
@@ -28,35 +25,38 @@ void FighterStateMachine::update(
         return;
     }
 
-    // =========================
+    // =====================================================
     // AIRBORNE
-    // =========================
+    // =====================================================
     if (!fighter.physics.grounded)
     {
         fighter.state = FighterState::Jumping;
         return;
     }
 
-    // =========================
-    // CROUCHING
-    // =========================
+    // =====================================================
+    // CROUCH
+    // =====================================================
     if (fighter.crouching)
     {
         fighter.state = FighterState::Crouching;
         return;
     }
 
-    // =========================
-    // WALK FORWARD / BACKWARD
-    // =========================
-    bool movingLeft  = cmd.moveLeft;
-    bool movingRight = cmd.moveRight;
+    // =====================================================
+    // WALK (UNIFIED LOGIC)
+    // =====================================================
+    bool moving =
+        cmd.moveLeft || cmd.moveRight;
 
-    if (movingLeft || movingRight)
+    if (moving)
     {
+        // dirección relativa al oponente (estable)
+        bool movingRight = cmd.moveRight;
+
         bool forward =
             (movingRight && fighter.facing == Facing::Right) ||
-            (movingLeft  && fighter.facing == Facing::Left);
+            (!movingRight && fighter.facing == Facing::Left);
 
         fighter.state =
             forward
@@ -66,9 +66,9 @@ void FighterStateMachine::update(
         return;
     }
 
-    // =========================
-    // IDLE DEFAULT
-    // =========================
+    // =====================================================
+    // IDLE
+    // =====================================================
     fighter.state = FighterState::Idle;
 }
 

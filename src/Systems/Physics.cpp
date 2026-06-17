@@ -27,7 +27,7 @@ void updateFighter(
     fighter.crouching = cmd.crouch;
 
     // =====================================================
-    // INPUT RAW (SIN FACING)
+    // INPUT RAW (ABSOLUTO, NO RELATIVO A FACING)
     // =====================================================
     float input = 0.0f;
 
@@ -35,13 +35,13 @@ void updateFighter(
     if (cmd.moveRight) input += 1.0f;
 
     // =====================================================
-    // MOVIMIENTO DIRECTO (FIX CRÍTICO)
+    // MOVIMIENTO DIRECTO
     // =====================================================
     fighter.physics.velocityX =
         input * fighter.character->moveSpeed;
 
     // =====================================================
-    // SALTO
+    // JUMP
     // =====================================================
     if (cmd.jump && fighter.physics.grounded)
     {
@@ -50,18 +50,18 @@ void updateFighter(
     }
 
     // =====================================================
-    // GRAVEDAD
+    // GRAVITY
     // =====================================================
     fighter.physics.velocityY += gravity * dt;
 
     // =====================================================
-    // INTEGRACIÓN
+    // INTEGRATION
     // =====================================================
     t.x += fighter.physics.velocityX * dt;
     t.y += fighter.physics.velocityY * dt;
 
     // =====================================================
-    // COLISIÓN SUELO
+    // GROUND COLLISION
     // =====================================================
     const float halfH = t.height * 0.5f;
     const float bottom = t.y - halfH;
@@ -78,7 +78,7 @@ void updateFighter(
     }
 
     // =====================================================
-    // LÍMITES STAGE
+    // STAGE LIMITS
     // =====================================================
     const float halfW = t.width * 0.5f;
 
@@ -96,20 +96,15 @@ void Physics::update(
     const FighterCommand& p1,
     const FighterCommand& p2)
 {
-    const float groundY =
-        match.stage().groundY();
-
-    const float leftBoundary =
-        match.stage().leftBoundary();
-
-    const float rightBoundary =
-        match.stage().rightBoundary();
+    const float groundY = match.stage().groundY();
+    const float leftBoundary = match.stage().leftBoundary();
+    const float rightBoundary = match.stage().rightBoundary();
 
     updateFighter(match.fighter1(), p1, dt, kGravity, groundY, leftBoundary, rightBoundary);
     updateFighter(match.fighter2(), p2, dt, kGravity, groundY, leftBoundary, rightBoundary);
 
     // =====================================================
-    // FACING AUTOMÁTICO (SOLO VISUAL / ANIMACIÓN)
+    // FACING SOLO VISUAL (NO IMPACTA INPUT NI STATE)
     // =====================================================
     Fighter& a = match.fighter1();
     Fighter& b = match.fighter2();
