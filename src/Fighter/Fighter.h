@@ -7,6 +7,8 @@
 #include "Facing.h"
 #include "FighterState.h"
 
+struct Animation;
+
 class Fighter
 {
 public:
@@ -24,4 +26,14 @@ public:
     FighterState state = FighterState::Idle;
 
     bool crouching = false;
+
+    // =========================
+    // ANIMATION
+    // =========================
+
+    const Animation* currentAnimation = nullptr;
+
+    int currentFrame = 0;
+
+    float animationTimer = 0.0f;
 };

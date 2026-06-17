@@ -54,11 +54,16 @@ add_executable(StreetFight2D
     src/Fighter/FighterController.cpp
     src/Fighter/CharacterPresets.cpp
 
+    # Animation
+    src/Animation/Animation.h
+    src/Animation/AnimationFrame.h
+    src/Animation/FighterAnimationData.h
+
     # Systems
     src/Systems/Physics.cpp
     src/Systems/CombatSystem.cpp
     src/Systems/FighterStateMachine.cpp
-    
+    src/Systems/AnimationSystem.cpp
 )
 
 # =========================================================
@@ -75,6 +80,7 @@ target_include_directories(
     src/Graphics
     src/Platform
     src/Systems
+    src/Animation
 
     externals/glad/include
     externals/glfw-3.4/include

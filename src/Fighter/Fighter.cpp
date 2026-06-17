@@ -28,6 +28,16 @@ Fighter::Fighter()
     facing = Facing::Right;
 
     state = FighterState::Idle;
+
+    // =========================
+    // ANIMATION
+    // =========================
+
+    currentAnimation = nullptr;
+
+    currentFrame = 0;
+
+    animationTimer = 0.0f;
 }
 
 void Fighter::applyDamage(int damage)

@@ -7,11 +7,20 @@ class Texture;
 namespace Characters
 {
     CharacterData createRyu(
-        Texture& idle);
+        Texture& idle1,
+        Texture& idle2,
+        Texture& idle3,
+        Texture& idle4);
 
     CharacterData createKen(
-        Texture& idle);
+        Texture& idle1,
+        Texture& idle2,
+        Texture& idle3,
+        Texture& idle4);
 
     CharacterData createMaki(
-        Texture& idle);
+        Texture& idle1,
+        Texture& idle2,
+        Texture& idle3,
+        Texture& idle4);
 }
