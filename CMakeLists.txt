@@ -58,6 +58,7 @@ add_executable(StreetFight2D
     src/Animation/Animation.h
     src/Animation/AnimationFrame.h
     src/Animation/FighterAnimationData.h
+    src/Animation/AssetManager.cpp
 
     # Systems
     src/Systems/Physics.cpp
