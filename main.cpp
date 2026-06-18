@@ -16,6 +16,7 @@
 #include "CharacterPresets.h"
 #include "AnimationSystem.h"
 #include "AssetManager.h"
+#include "FighterPushboxSystem.h"
 
 #include <glad/glad.h>
 #include <filesystem>
@@ -65,8 +66,8 @@ int main(int, char* argv[])
     const auto executableDir = getExecutableDirectory(argv[0]);
 
     Shader shader(
-    executableDir / "Assets/Shaders/triangle.vert",
-    executableDir / "Assets/Shaders/triangle.frag"
+        executableDir / "Assets/Shaders/triangle.vert",
+        executableDir / "Assets/Shaders/triangle.frag"
     );
 
     QuadMesh quad;
@@ -91,6 +92,7 @@ int main(int, char* argv[])
     CombatSystem combat;
     FighterStateMachine stateMachine;
     AnimationSystem animationSystem;
+    FighterPushboxSystem pushboxSystem;
     GameTime gameTime;
     FighterController controller;
 
@@ -109,6 +111,8 @@ int main(int, char* argv[])
         FighterCommand c2 = controller.build(false);
 
         physics.update(match, dt, c1, c2);
+
+        pushboxSystem.resolve(match);
 
         stateMachine.update(f1, c1);
         stateMachine.update(f2, c2);

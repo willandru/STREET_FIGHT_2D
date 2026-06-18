@@ -1,3 +1,6 @@
+// /src/Shader.cpp
+
+
 #include "Shader.h"
 
 #include <glad/glad.h>
@@ -12,29 +15,15 @@ namespace
 {
 std::string readTextFile(const std::filesystem::path& path)
 {
-    std::cout
-        << "[SHADER] Leyendo archivo: "
-        << path.string()
-        << std::endl;
-
     std::ifstream file(path);
 
     if (!file)
     {
-        std::cout
-            << "[SHADER] ERROR: no se pudo abrir: "
-            << path.string()
-            << std::endl;
-
         return {};
     }
 
     std::stringstream buffer;
     buffer << file.rdbuf();
-
-    std::cout
-        << "[SHADER] Archivo cargado correctamente"
-        << std::endl;
 
     return buffer.str();
 }
@@ -43,11 +32,6 @@ unsigned int compileShader(
     GLenum type,
     const std::string& source)
 {
-    std::cout
-        << "[SHADER] Compilando "
-        << (type == GL_VERTEX_SHADER ? "VERTEX" : "FRAGMENT")
-        << std::endl;
-
     const unsigned int shader = glCreateShader(type);
 
     const char* sourcePtr = source.c_str();
@@ -78,7 +62,7 @@ unsigned int compileShader(
             infoLog);
 
         std::cerr
-            << "[SHADER] Shader compilation error:\n"
+            << "Shader compilation error:\n"
             << infoLog
             << '\n';
 
@@ -86,10 +70,6 @@ unsigned int compileShader(
 
         return 0;
     }
-
-    std::cout
-        << "[SHADER] Compilacion OK"
-        << std::endl;
 
     return shader;
 }
@@ -99,10 +79,6 @@ Shader::Shader(
     const std::filesystem::path& vertexPath,
     const std::filesystem::path& fragmentPath)
 {
-    std::cout
-        << "[SHADER] Constructor Shader"
-        << std::endl;
-
     const std::string vertexSource =
         readTextFile(vertexPath);
 
@@ -112,16 +88,8 @@ Shader::Shader(
     if (vertexSource.empty() ||
         fragmentSource.empty())
     {
-        std::cout
-            << "[SHADER] ERROR: vertexSource o fragmentSource vacio"
-            << std::endl;
-
         return;
     }
-
-    std::cout
-        << "[SHADER] Fuentes cargadas"
-        << std::endl;
 
     const unsigned int vertexShader =
         compileShader(
@@ -136,16 +104,8 @@ Shader::Shader(
     if (vertexShader == 0 ||
         fragmentShader == 0)
     {
-        std::cout
-            << "[SHADER] ERROR: fallo compilacion de shaders"
-            << std::endl;
-
         return;
     }
-
-    std::cout
-        << "[SHADER] Creando programa OpenGL"
-        << std::endl;
 
     id_ = glCreateProgram();
 
@@ -172,26 +132,16 @@ Shader::Shader(
             infoLog);
 
         std::cerr
-            << "[SHADER] Shader link error:\n"
+            << "Shader link error:\n"
             << infoLog
             << '\n';
 
         glDeleteProgram(id_);
         id_ = 0;
     }
-    else
-    {
-        std::cout
-            << "[SHADER] Link OK"
-            << std::endl;
-    }
 
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
-
-    std::cout
-        << "[SHADER] Shader listo"
-        << std::endl;
 }
 
 Shader::~Shader()
@@ -212,6 +162,7 @@ void Shader::use() const
     glUseProgram(id_);
 }
 
+
 void Shader::setMat4(
     const char* name,
     const glm::mat4& matrix) const
@@ -227,6 +178,7 @@ void Shader::setMat4(
         GL_FALSE,
         glm::value_ptr(matrix));
 }
+
 
 void Shader::setInt(
     const char* name,
