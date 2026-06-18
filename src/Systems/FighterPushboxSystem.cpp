@@ -10,15 +10,29 @@ float getHalfWidth(const Fighter& f)
     return f.physics.transform.width * 0.5f;
 }
 
+float getHalfHeight(const Fighter& f)
+{
+    return f.physics.transform.height * 0.5f;
+}
+
 void resolvePair(Fighter& a, Fighter& b)
 {
     auto& ta = a.physics.transform;
     auto& tb = b.physics.transform;
 
     float dx = tb.x - ta.x;
+    float dy = tb.y - ta.y;
+
+    // =========================
+    // FILTRO VERTICAL (ANTI BLOCK EN SALTO)
+    // =========================
+    float verticalThreshold =
+        getHalfHeight(a) + getHalfHeight(b);
+
+    if (std::abs(dy) > verticalThreshold)
+        return;
 
     float minDist = getHalfWidth(a) + getHalfWidth(b);
-
     float overlap = minDist - std::abs(dx);
 
     if (overlap <= 0.0f)
