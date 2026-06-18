@@ -4,6 +4,7 @@
 #include "Animation.h"
 #include "CharacterData.h"
 #include "FighterState.h"
+#include "FighterCommand.h"
 
 void AnimationSystem::update(
     Fighter& fighter,
@@ -21,15 +22,26 @@ void AnimationSystem::update(
                 &fighter.character->animations.idle;
             break;
 
-        case FighterState::WalkingForward:
-            targetAnimation =
-                &fighter.character->animations.walkForward;
-            break;
+        case FighterState::Walking:
+        {
+            // =====================================================
+            // FORWARD / BACKWARD SE RESUELVE AQUÍ (NO EN STATE)
+            // =====================================================
 
-        case FighterState::WalkingBackward:
+            bool movingRight = fighter.physics.velocityX > 0.01f;
+            bool movingLeft  = fighter.physics.velocityX < -0.01f;
+
+            bool forward =
+                (movingRight && fighter.facing == Facing::Right) ||
+                (movingLeft  && fighter.facing == Facing::Left);
+
             targetAnimation =
-                &fighter.character->animations.walkBackward;
+                forward
+                ? &fighter.character->animations.walkForward
+                : &fighter.character->animations.walkBackward;
+
             break;
+        }
 
         case FighterState::Jumping:
             targetAnimation =
@@ -57,9 +69,9 @@ void AnimationSystem::update(
             break;
     }
 
-    // =========================
+    // =====================================================
     // SWITCH ANIMATION
-    // =========================
+    // =====================================================
     if (fighter.currentAnimation != targetAnimation)
     {
         fighter.currentAnimation = targetAnimation;

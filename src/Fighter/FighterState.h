@@ -3,8 +3,7 @@
 enum class FighterState
 {
     Idle,
-    WalkingForward,
-    WalkingBackward,
+    Walking,
     Jumping,
     Crouching,
     LightAttack,

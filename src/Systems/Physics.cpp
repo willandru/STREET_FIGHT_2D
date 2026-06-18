@@ -1,5 +1,4 @@
 #include "Physics.h"
-
 #include "Facing.h"
 #include "Fighter.h"
 #include "Stage.h"
@@ -26,45 +25,40 @@ void updateFighter(
 
     fighter.crouching = cmd.crouch;
 
-    // =====================================================
-    // INPUT RAW (ABSOLUTO, NO RELATIVO A FACING)
-    // =====================================================
+    // =========================
+    // INPUT
+    // =========================
     float input = 0.0f;
-
     if (cmd.moveLeft)  input -= 1.0f;
     if (cmd.moveRight) input += 1.0f;
 
-    // =====================================================
-    // MOVIMIENTO DIRECTO
-    // =====================================================
     fighter.physics.velocityX =
         input * fighter.character->moveSpeed;
 
-    // =====================================================
+    // =========================
     // JUMP
-    // =====================================================
+    // =========================
     if (cmd.jump && fighter.physics.grounded)
     {
-        fighter.physics.velocityY =
-            fighter.character->jumpSpeed;
+        fighter.physics.velocityY = fighter.character->jumpSpeed;
     }
 
-    // =====================================================
+    // =========================
     // GRAVITY
-    // =====================================================
+    // =========================
     fighter.physics.velocityY += gravity * dt;
 
-    // =====================================================
+    // =========================
     // INTEGRATION
-    // =====================================================
+    // =========================
     t.x += fighter.physics.velocityX * dt;
     t.y += fighter.physics.velocityY * dt;
 
-    // =====================================================
+    // =========================
     // GROUND COLLISION
-    // =====================================================
-    const float halfH = t.height * 0.5f;
-    const float bottom = t.y - halfH;
+    // =========================
+    float halfH = t.height * 0.5f;
+    float bottom = t.y - halfH;
 
     if (bottom <= groundY)
     {
@@ -77,10 +71,10 @@ void updateFighter(
         fighter.physics.grounded = false;
     }
 
-    // =====================================================
+    // =========================
     // STAGE LIMITS
-    // =====================================================
-    const float halfW = t.width * 0.5f;
+    // =========================
+    float halfW = t.width * 0.5f;
 
     if (t.x - halfW < leftBoundary)
         t.x = leftBoundary + halfW;
@@ -88,7 +82,9 @@ void updateFighter(
     if (t.x + halfW > rightBoundary)
         t.x = rightBoundary - halfW;
 }
-}
+
+} // namespace
+
 
 void Physics::update(
     Match& match,
@@ -103,9 +99,10 @@ void Physics::update(
     updateFighter(match.fighter1(), p1, dt, kGravity, groundY, leftBoundary, rightBoundary);
     updateFighter(match.fighter2(), p2, dt, kGravity, groundY, leftBoundary, rightBoundary);
 
-    // =====================================================
-    // FACING SOLO VISUAL (NO IMPACTA INPUT NI STATE)
-    // =====================================================
+
+    // =========================
+    // FACING (SOLO VISUAL)
+    // =========================
     Fighter& a = match.fighter1();
     Fighter& b = match.fighter2();
 

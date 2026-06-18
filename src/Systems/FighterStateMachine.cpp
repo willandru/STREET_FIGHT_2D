@@ -1,5 +1,4 @@
 #include "FighterStateMachine.h"
-#include "Facing.h"
 #include "Fighter.h"
 #include "FighterCommand.h"
 #include "FighterState.h"
@@ -44,25 +43,14 @@ void FighterStateMachine::update(
     }
 
     // =====================================================
-    // WALK (UNIFIED LOGIC)
+    // WALK (SIMPLIFICADO)
     // =====================================================
     bool moving =
         cmd.moveLeft || cmd.moveRight;
 
     if (moving)
     {
-        // dirección relativa al oponente (estable)
-        bool movingRight = cmd.moveRight;
-
-        bool forward =
-            (movingRight && fighter.facing == Facing::Right) ||
-            (!movingRight && fighter.facing == Facing::Left);
-
-        fighter.state =
-            forward
-            ? FighterState::WalkingForward
-            : FighterState::WalkingBackward;
-
+        fighter.state = FighterState::Walking;
         return;
     }
 

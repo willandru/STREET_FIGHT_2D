@@ -65,8 +65,8 @@ int main(int, char* argv[])
     const auto executableDir = getExecutableDirectory(argv[0]);
 
     Shader shader(
-        executableDir / "triangle.vert",
-        executableDir / "triangle.frag"
+    executableDir / "Assets/Shaders/triangle.vert",
+    executableDir / "Assets/Shaders/triangle.frag"
     );
 
     QuadMesh quad;
