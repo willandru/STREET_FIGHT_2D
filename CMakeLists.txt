@@ -56,13 +56,15 @@ add_executable(StreetFight2D
 
     # Animation
     src/Animation/AssetManager.cpp
+    src/Animation/AnimationSystem.cpp
+    src/Animation/AnimationComponent.cpp
+
 
     # Systems
     src/Systems/Physics.cpp
     src/Systems/CombatSystem.cpp
     src/Systems/FighterStateMachine.cpp
-    src/Systems/AnimationSystem.cpp
-    src/Systems/AnimationPlayer.cpp
+    
 
     # Pushbox (si existe)
     src/Systems/FighterPushboxSystem.cpp

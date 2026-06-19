@@ -15,6 +15,7 @@
 #include "FighterStateMachine.h"
 #include "CharacterPresets.h"
 #include "AnimationSystem.h"
+#include "AnimationComponent.h"
 #include "AssetManager.h"
 #include "FighterPushboxSystem.h"
 
@@ -39,10 +40,9 @@ void renderFrame(const Renderer& renderer, const Match& match)
 
     auto drawFighter = [&](const Fighter& f)
     {
-        const Animation* anim = f.currentAnimation;
-        if (!anim || anim->frames.empty()) return;
+        if (!f.animation) return;
 
-        const Texture* tex = anim->frames[f.currentFrame].texture;
+        const Texture* tex = f.animation->getTexture();
         if (!tex) return;
 
         renderer.draw(f.physics.transform, f.facing, *tex);
@@ -88,6 +88,15 @@ int main(int, char* argv[])
     match.fighter1().character = &ryu;
     match.fighter2().character = &ken;
 
+    // =========================
+    // NEW ANIMATION COMPONENTS
+    // =========================
+    AnimationComponent anim1;
+    AnimationComponent anim2;
+
+    match.fighter1().animation = &anim1;
+    match.fighter2().animation = &anim2;
+
     Physics physics;
     CombatSystem combat;
     FighterStateMachine stateMachine;
@@ -119,6 +128,9 @@ int main(int, char* argv[])
 
         animationSystem.update(f1, dt);
         animationSystem.update(f2, dt);
+
+        f1.animation->update(dt);
+        f2.animation->update(dt);
 
         combat.update(match, stateMachine);
 
