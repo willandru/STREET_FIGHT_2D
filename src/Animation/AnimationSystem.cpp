@@ -5,6 +5,7 @@
 #include "CharacterData.h"
 #include "FighterState.h"
 #include "Facing.h"
+#include "AnimationComponent.h"
 
 void AnimationSystem::update(
     Fighter& fighter,
@@ -60,7 +61,10 @@ void AnimationSystem::update(
     }
 
     // ================================
-    // SOLO SELECCIÓN DE ANIMACIÓN
+    // ONLY CHANGE IF DIFFERENT
     // ================================
-    fighter.animation->play(targetAnimation);
+    if (fighter.animation->getCurrentAnimation() != targetAnimation)
+    {
+        fighter.animation->play(targetAnimation);
+    }
 }

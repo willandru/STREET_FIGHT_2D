@@ -7,6 +7,8 @@
 #include "Facing.h"
 #include "FighterState.h"
 
+
+
 class AnimationComponent;
 
 class Fighter
