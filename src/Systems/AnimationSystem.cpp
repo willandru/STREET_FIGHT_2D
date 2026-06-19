@@ -4,13 +4,13 @@
 #include "Animation.h"
 #include "CharacterData.h"
 #include "FighterState.h"
-#include "FighterCommand.h"
+#include "Facing.h"
 
 void AnimationSystem::update(
     Fighter& fighter,
     float deltaTime)
 {
-    if (!fighter.character)
+    if (!fighter.character || !fighter.animation)
         return;
 
     const Animation* targetAnimation = nullptr;
@@ -18,16 +18,11 @@ void AnimationSystem::update(
     switch (fighter.state)
     {
         case FighterState::Idle:
-            targetAnimation =
-                &fighter.character->animations.idle;
+            targetAnimation = &fighter.character->animations.idle;
             break;
 
         case FighterState::Walking:
         {
-            // =====================================================
-            // FORWARD / BACKWARD SE RESUELVE AQUÍ (NO EN STATE)
-            // =====================================================
-
             bool movingRight = fighter.physics.velocityX > 0.01f;
             bool movingLeft  = fighter.physics.velocityX < -0.01f;
 
@@ -44,65 +39,28 @@ void AnimationSystem::update(
         }
 
         case FighterState::Jumping:
-            targetAnimation =
-                &fighter.character->animations.jump;
+            targetAnimation = &fighter.character->animations.jump;
             break;
 
         case FighterState::Crouching:
-            targetAnimation =
-                &fighter.character->animations.crouch;
+            targetAnimation = &fighter.character->animations.crouch;
             break;
 
         case FighterState::LightAttack:
-            targetAnimation =
-                &fighter.character->animations.lightAttack;
+            targetAnimation = &fighter.character->animations.lightAttack;
             break;
 
         case FighterState::HeavyAttack:
-            targetAnimation =
-                &fighter.character->animations.heavyAttack;
+            targetAnimation = &fighter.character->animations.heavyAttack;
             break;
 
         default:
-            targetAnimation =
-                &fighter.character->animations.idle;
+            targetAnimation = &fighter.character->animations.idle;
             break;
     }
 
-    // =====================================================
-    // SWITCH ANIMATION
-    // =====================================================
-    if (fighter.currentAnimation != targetAnimation)
-    {
-        fighter.currentAnimation = targetAnimation;
-        fighter.currentFrame = 0;
-        fighter.animationTimer = 0.0f;
-    }
-
-    if (!fighter.currentAnimation ||
-        fighter.currentAnimation->frames.empty())
-        return;
-
-    if (fighter.currentFrame >= (int)fighter.currentAnimation->frames.size())
-        fighter.currentFrame = 0;
-
-    fighter.animationTimer += deltaTime;
-
-    const AnimationFrame& frame =
-        fighter.currentAnimation->frames[fighter.currentFrame];
-
-    if (fighter.animationTimer < frame.duration)
-        return;
-
-    fighter.animationTimer = 0.0f;
-    fighter.currentFrame++;
-
-    if (fighter.currentFrame >= (int)fighter.currentAnimation->frames.size())
-    {
-        if (fighter.currentAnimation->loop)
-            fighter.currentFrame = 0;
-        else
-            fighter.currentFrame =
-                (int)fighter.currentAnimation->frames.size() - 1;
-    }
+    // ================================
+    // SOLO SELECCIÓN DE ANIMACIÓN
+    // ================================
+    fighter.animation->play(targetAnimation);
 }

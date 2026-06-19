@@ -7,7 +7,7 @@
 #include "Facing.h"
 #include "FighterState.h"
 
-struct Animation;
+class AnimationComponent;
 
 class Fighter
 {
@@ -27,10 +27,7 @@ public:
     bool crouching = false;
 
     // =========================
-    // ANIMATION STATE (NEEDED)
+    // ANIMATION (NEW SYSTEM)
     // =========================
-
-    const Animation* currentAnimation = nullptr;
-    int currentFrame = 0;
-    float animationTimer = 0.0f;
+    AnimationComponent* animation = nullptr;
 };

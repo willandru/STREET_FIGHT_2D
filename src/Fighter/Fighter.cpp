@@ -1,4 +1,5 @@
 #include "Fighter.h"
+#include "AnimationComponent.h"
 
 Fighter::Fighter()
 {
@@ -29,10 +30,10 @@ Fighter::Fighter()
 
     state = FighterState::Idle;
 
-    // animation init
-    currentAnimation = nullptr;
-    currentFrame = 0;
-    animationTimer = 0.0f;
+    // =========================
+    // ANIMATION INIT (NEW)
+    // =========================
+    animation = nullptr;
 }
 
 void Fighter::applyDamage(int damage)
